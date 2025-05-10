@@ -81,20 +81,33 @@ def escala():
         return redirect(url_for("escala"))
 
     return render_template_string("""
-        <h2>Escala do Ministério Maná - Maio</h2>
-        <form method="post">
-            <table border="1" cellpadding="5">
-                <tr><th>Data</th><th>Responsáveis</th></tr>
-                {% for i in range(escala|length) %}
-                <tr>
-                    <td><input type="text" name="data_{{ i }}" value="{{ escala[i].data }}"></td>
-                    <td><input type="text" name="resp_{{ i }}" value="{{ escala[i].responsaveis }}"></td>
-                </tr>
-                {% endfor %}
-            </table>
-            <br><input type="submit" value="Salvar Alterações">
-        </form><br>
-        <a href="/">&#8592; Voltar</a>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Escala - Ministério Maná</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h1>📋 Escala do Ministério Maná - Maio</h1>
+                <form method="post">
+                    <table>
+                        <tr><th>Data</th><th>Responsáveis</th></tr>
+                        {% for i in range(escala|length) %}
+                        <tr>
+                            <td><input type="text" name="data_{{ i }}" value="{{ escala[i].data }}"></td>
+                            <td><input type="text" name="resp_{{ i }}" value="{{ escala[i].responsaveis }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <br>
+                    <button type="submit">Salvar Alterações</button>
+                </form>
+                <br>
+                <a href="/">← Voltar</a>
+            </div>
+        </body>
+        </html>
     """, escala=escala_maio)
 
 @app.route("/fotos")
