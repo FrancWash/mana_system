@@ -185,14 +185,26 @@ def fotos():
         {"arquivo": "equipe3.jpg", "descricao": "Confraternização do Maná"}
     ]
     return render_template_string("""
-        <h2>Fotos da Equipe do Ministério Maná</h2>
-        {% for foto in imagens %}
-            <div style="margin-bottom: 20px;">
-                <img src="{{ url_for('static', filename=foto.arquivo) }}" alt="Equipe" width="400"><br>
-                <strong>{{ foto.descricao }}</strong>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Fotos da Equipe - Ministério Maná</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h1>👥 Fotos da Equipe do Ministério Maná</h1>
+                {% for foto in imagens %}
+                    <div style="margin-bottom: 30px;">
+                        <img src="{{ url_for('static', filename=foto.arquivo) }}" alt="Equipe" width="100%" style="max-width: 500px; border-radius: 8px;"><br>
+                        <strong>{{ foto.descricao }}</strong>
+                    </div>
+                {% endfor %}
+                <br>
+                <a href="/">← Voltar</a>
             </div>
-        {% endfor %}
-        <a href="/">&#8592; Voltar</a>
+        </body>
+        </html>
     """, imagens=imagens)
 
 if __name__ == "__main__":
