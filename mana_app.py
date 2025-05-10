@@ -50,13 +50,26 @@ def login():
         else:
             error = "Usuário ou senha incorretos."
     return render_template_string("""
-        <h2>Login Ministério Maná</h2>
-        {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-        <form method="post">
-            Usuário: <input type="text" name="username"> <br>
-            Senha: <input type="password" name="password"><br>
-            <input type="submit" value="Entrar">
-        </form>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <title>Login - Ministério Maná</title>
+        </head>
+        <body>
+            <h2>Login Ministério Maná</h2>
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+            <form method="post">
+                Usuário: <input type="text" name="username"> <br>
+                Senha: <input type="password" name="password"><br>
+                <input type="submit" value="Entrar">
+            </form>
+            <br>
+            <a href="/">← Voltar</a>
+        </body>
+        </html>
     """, error=error)
 
 @app.route("/escala", methods=["GET", "POST"])
