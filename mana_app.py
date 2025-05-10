@@ -23,22 +23,23 @@ def home():
         <!DOCTYPE html>
         <html>
         <head>
-            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             <title>Ministério Maná</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
-            <div class="container" style="background-color: #fffbe6; padding: 30px; border-radius: 15px; text-align: center; max-width: 700px; margin: auto;">
-                <h1 style="color: #1a1a2e; font-size: 2.2em;">🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
-                <p style="font-style: italic; font-size: 1.2em; color: #333;">
+            <div class="container">
+                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner" class="banner-img">
+                <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
+                <p class="versiculo">
                     "Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br>
-                    <strong>– Provérbios 19:17</strong>
+                    <em>– Provérbios 19:17</em>
                 </p>
-                <div style="margin-top: 30px;">
-                    <p><a href="/login" style="text-decoration: none; font-size: 1.3em; color: #1a1a2e;">🔐 Login</a></p>
-                    <p><a href="/escala" style="text-decoration: none; font-size: 1.3em; color: #1a1a2e;">📋 Escala</a></p>
-                    <p><a href="/controle" style="text-decoration: none; font-size: 1.3em; color: #1a1a2e;">📦 Controle</a></p>
-                    <p><a href="/fotos" style="text-decoration: none; font-size: 1.3em; color: #1a1a2e;">👥 Fotos da Equipe</a></p>
-                    <p><a href="/familias" style="text-decoration: none; font-size: 1.3em; color: #1a1a2e;">👨‍👩‍👧 Cadastro de Famílias</a></p>
+                <div class="menu-links">
+                    <p><a href="/login">🔐 Login</a></p>
+                    <p><a href="/escala">📋 Escala</a></p>
+                    <p><a href="/controle">📦 Controle</a></p>
+                    <p><a href="/fotos">👥 Fotos da Equipe</a></p>
+                    <p><a href="/familias">👨‍👩‍👧 Cadastro de Famílias</a></p>
                 </div>
             </div>
         </body>

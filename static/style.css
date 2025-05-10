@@ -60,3 +60,11 @@ form input[type="password"] {
     box-sizing: border-box;
     margin-bottom: 10px;
 }
+
+.banner-img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    margin: 20px auto;
+    display: block;
+}
