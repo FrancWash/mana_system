@@ -17,7 +17,17 @@ escala_maio = [
 
 @app.route("/")
 def home():
-    return "<h1>Bem-vindo ao Sistema do Ministério Maná!</h1><p>Glória a DEUS!</p>"
+    return render_template_string("""
+        <div style="margin-bottom: 20px;">
+            <a href="/" style="margin-right: 10px;">🏠 Início</a>
+            <a href="/login" style="margin-right: 10px;">🔐 Login</a>
+            <a href="/escala" style="margin-right: 10px;">📋 Escala</a>
+            <a href="/controle">📦 Controle</a>
+        </div>
+
+        <h1>Bem-vindo ao Sistema do Ministério Maná!</h1>
+        <p>Glória a DEUS!</p>
+    """)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
