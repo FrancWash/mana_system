@@ -49,3 +49,12 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #1c3160;
 }
+
+input[type="text"],
+input[type="password"] {
+    width: 300px;
+    max-width: 90%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
