@@ -26,7 +26,7 @@ def login():
             Senha: <input type="password" name="password"><br>
             <input type="submit" value="Entrar">
         </form>
-    """, error=error)                                                                                                                                                                                                                                                          )        
+    """, error=error)    
 
 if __name__ == "__main__":
     import os
