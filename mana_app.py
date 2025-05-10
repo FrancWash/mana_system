@@ -108,7 +108,74 @@ def escala():
             </div>
         </body>
         </html>
-    """, escala=escala_maio)
+    """, escala=escala_maio) 
+
+controle_estoque = [
+    {"produto": "Arroz (1kg)", "caixa": 43, "prateleira": 0, "vencidos": 1},
+    {"produto": "Feijão", "caixa": 43, "prateleira": 9, "vencidos": 2},
+    {"produto": "Óleo", "caixa": 8, "prateleira": 15, "vencidos": 1},
+    {"produto": "Fubá", "caixa": 0, "prateleira": 41, "vencidos": 0},
+    {"produto": "Farinha de mandioca", "caixa": 0, "prateleira": 23, "vencidos": 0},
+    {"produto": "Farinha de trigo", "caixa": 0, "prateleira": 12, "vencidos": 0},
+    {"produto": "Molho de tomate", "caixa": 21, "prateleira": 26, "vencidos": 0},
+    {"produto": "Café", "caixa": 0, "prateleira": 16, "vencidos": 0},
+    {"produto": "Açúcar", "caixa": 28, "prateleira": 10, "vencidos": 0},
+    {"produto": "Sal", "caixa": 0, "prateleira": 24, "vencidos": 0},
+    {"produto": "Biscoito salgado", "caixa": 0, "prateleira": 40, "vencidos": 0},
+    {"produto": "Biscoito doce", "caixa": 0, "prateleira": 41, "vencidos": 0},
+    {"produto": "Sardinha", "caixa": 0, "prateleira": 36, "vencidos": 0},
+    {"produto": "Macarrão", "caixa": 44, "prateleira": 28, "vencidos": 0},
+    {"produto": "Milho", "caixa": 0, "prateleira": 25, "vencidos": 0},
+    {"produto": "Achocolatado", "caixa": 0, "prateleira": 13, "vencidos": 0},
+    {"produto": "Tempero pronto", "caixa": 0, "prateleira": 16, "vencidos": 0},
+    {"produto": "Sabonetes", "caixa": 0, "prateleira": 56, "vencidos": 0},
+    {"produto": "Pasta de dente", "caixa": 0, "prateleira": 36, "vencidos": 0},
+    {"produto": "Escova de dente", "caixa": 0, "prateleira": 14, "vencidos": 0},
+    {"produto": "Absorventes", "caixa": 0, "prateleira": 16, "vencidos": 0},
+    {"produto": "Papel higiênico", "caixa": 0, "prateleira": 9, "vencidos": 0},
+    {"produto": "Chupeta", "caixa": 0, "prateleira": 1, "vencidos": 0}
+]
+
+@app.route("/controle", methods=["GET", "POST"])
+def controle():
+    if request.method == "POST":
+        for i in range(len(controle_estoque)):
+            controle_estoque[i]["caixa"] = int(request.form.get(f"caixa_{i}", 0))
+            controle_estoque[i]["prateleira"] = int(request.form.get(f"prateleira_{i}", 0))
+            controle_estoque[i]["vencidos"] = int(request.form.get(f"vencidos_{i}", 0))
+        return redirect(url_for("controle"))
+
+    return render_template_string("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Controle de Estoque - Ministério Maná</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h1>📦 Controle de Alimentos e Kits - Ministério Maná</h1>
+                <form method="post">
+                    <table>
+                        <tr><th>Produto</th><th>Caixa</th><th>Prateleira</th><th>Vencidos</th></tr>
+                        {% for i in range(estoque|length) %}
+                        <tr>
+                            <td>{{ estoque[i].produto }}</td>
+                            <td><input type="number" name="caixa_{{ i }}" value="{{ estoque[i].caixa }}"></td>
+                            <td><input type="number" name="prateleira_{{ i }}" value="{{ estoque[i].prateleira }}"></td>
+                            <td><input type="number" name="vencidos_{{ i }}" value="{{ estoque[i].vencidos }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <br>
+                    <button type="submit">Salvar Alterações</button>
+                </form>
+                <br>
+                <a href="/">← Voltar</a>
+            </div>
+        </body>
+        </html>
+    """, estoque=controle_estoque)
 
 @app.route("/fotos")
 def fotos():
