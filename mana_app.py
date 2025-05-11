@@ -114,13 +114,35 @@ def login():
     """, error=error)
 
 
+# Arquivo de escalas por mês
+ESCALAS_FILE = "escalas.json"
+
+# Carrega ou inicializa escalas
+if os.path.exists(ESCALAS_FILE):
+    with open(ESCALAS_FILE, "r") as f:
+        escalas_mensais = json.load(f)
+else:
+    escalas_mensais = {}
+
 @app.route("/escala", methods=["GET", "POST"])
 def escala():
+    hoje = datetime.now()
+    mes_atual = request.args.get("mes") or hoje.strftime("%m")
+    ano_atual = request.args.get("ano") or hoje.strftime("%Y")
+    chave = f"{mes_atual}-{ano_atual}"
+
+    if chave not in escalas_mensais:
+        escalas_mensais[chave] = [
+            {"data": "", "responsaveis": ""} for _ in range(10)
+        ]
+
     if request.method == "POST":
-        for i in range(len(escala_maio)):
-            escala_maio[i]["data"] = request.form.get(f"data_{i}")
-            escala_maio[i]["responsaveis"] = request.form.get(f"resp_{i}")
-        return redirect(url_for("escala"))
+        for i in range(len(escalas_mensais[chave])):
+            escalas_mensais[chave][i]["data"] = request.form.get(f"data_{i}", "")
+            escalas_mensais[chave][i]["responsaveis"] = request.form.get(f"resp_{i}", "")
+        with open(ESCALAS_FILE, "w") as f:
+            json.dump(escalas_mensais, f)
+        return redirect(url_for("escala", mes=mes_atual, ano=ano_atual))
 
     return render_template_string("""
         <!DOCTYPE html>
@@ -131,8 +153,22 @@ def escala():
         </head>
         <body>
             <div class="container">
-                <h1>📋 Escala do Ministério Maná - Maio</h1>
-                <p style="font-style: italic; font-size: 1.1em;">"Se alguém serve, faça-o na força que Deus provê, para que em tudo Deus seja glorificado."<br><strong>– 1 Pedro 4:11</strong></p>
+                <h1>📋 Escala do Ministério Maná - {{ mes }}/{{ ano }}</h1>
+                <form method="get">
+                    <label>Selecione o mês e ano:</label>
+                    <select name="mes">
+                        {% for m in range(1, 13) %}
+                            <option value="{{'%02d' % m}}" {% if mes == '%02d' % m %}selected{% endif %}>{{'%02d' % m}}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="ano">
+                        {% for a in range(2024, 2031) %}
+                            <option value="{{a}}" {% if ano == str(a) %}selected{% endif %}>{{a}}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">🔄 Ver Escala</button>
+                </form>
+                <br>
                 <form method="post">
                     <table>
                         <tr><th>Data</th><th>Responsáveis</th></tr>
@@ -147,14 +183,11 @@ def escala():
                     <button type="submit">Salvar Alterações</button>
                 </form>
                 <br>
-                <a href="/">← Voltar</a>
-                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
-                    🙌 “Tudo quanto fizerdes, fazei-o de coração, como para o Senhor e não para homens.” – Colossenses 3:23
-                </footer>
+                <a href="/">Voltar</a>
             </div>
         </body>
         </html>
-    """, escala=escala_maio) 
+    """, escala=escalas_mensais[chave], mes=mes_atual, ano=ano_atual) 
 
 controle_estoque = [
     {"produto": "Arroz (1kg)", "caixa": 43, "prateleira": 0, "vencidos": 1},
