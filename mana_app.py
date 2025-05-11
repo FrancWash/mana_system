@@ -90,20 +90,29 @@ def login():
             <title>Login - Ministério Maná</title>
         </head>
         <body>
-            <h2>Login Ministério Maná</h2>
-            {% if error %}
-                <p style="color:red;">{{ error }}</p>
-            {% endif %}
-            <form method="post">
-                Usuário: <input type="text" name="username"> <br>
-                Senha: <input type="password" name="password"><br>
-                <input type="submit" value="Entrar">
-            </form>
-            <br>
-            <a href="/">← Voltar</a>
+            <div class="container">
+                <h2>🔐 Login Ministério Maná</h2>
+                <p style="font-style: italic; font-size: 1.1em;">"Entrega o teu caminho ao Senhor, confia nele, e o mais Ele fará."<br><strong>– Salmo 37:5</strong></p>
+                {% if error %}
+                    <p style="color:red;">{{ error }}</p>
+                {% endif %}
+                <form method="post">
+                    <label>Usuário:</label>
+                    <input type="text" name="username"> <br>
+                    <label>Senha:</label>
+                    <input type="password" name="password"><br>
+                    <input type="submit" value="Entrar">
+                </form>
+                <br>
+                <a href="/">← Voltar</a>
+                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    🙏 “Nisto todos conhecerão que sois meus discípulos, se vos amardes uns aos outros.” – João 13:35
+                </footer>
+            </div>
         </body>
         </html>
     """, error=error)
+
 
 @app.route("/escala", methods=["GET", "POST"])
 def escala():
