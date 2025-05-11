@@ -234,6 +234,8 @@ def controle():
         <body>
             <div class="container">
                 <h1>📦 Controle de Alimentos e Kits - Ministério Maná</h1>
+                <p style="font-style: italic;">"Porque tive fome, e me destes de comer..."<br><strong>– Mateus 25:35</strong></p>
+
                 <form method="post">
                     <table>
                         <tr><th>Produto</th><th>Caixa</th><th>Prateleira</th><th>Vencidos</th></tr>
@@ -249,8 +251,13 @@ def controle():
                     <br>
                     <button type="submit">Salvar Alterações</button>
                 </form>
+
                 <br>
                 <a href="/">← Voltar</a>
+
+                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    💙 “A alma generosa prosperará; quem dá alívio aos outros, alívio receberá.” – Provérbios 11:25
+                </footer>
             </div>
         </body>
         </html>
