@@ -340,18 +340,51 @@ def fotos():
         <head>
             <title>Fotos da Equipe - Ministério Maná</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <style>
+                .galeria {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 30px;
+                    justify-content: center;
+                }
+                .foto-box {
+                    text-align: center;
+                    max-width: 500px;
+                    background: #fefefe;
+                    padding: 15px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                .foto-box img {
+                    width: 100%;
+                    border-radius: 8px;
+                }
+                .foto-box strong {
+                    display: block;
+                    margin-top: 10px;
+                    color: #2e4a7d;
+                }
+            </style>
         </head>
         <body>
             <div class="container">
-                <h1>👥 Fotos da Equipe do Ministério Maná</h1>
-                {% for foto in imagens %}
-                    <div style="margin-bottom: 30px;">
-                        <img src="{{ url_for('static', filename=foto.arquivo) }}" alt="Equipe" width="100%" style="max-width: 500px; border-radius: 8px;"><br>
-                        <strong>{{ foto.descricao }}</strong>
-                    </div>
-                {% endfor %}
-                <br>
-                <a href="/">&#8592; Voltar</a>
+                <h1>👥 Galeria da Equipe do Ministério Maná</h1>
+                <p style="font-style: italic;">"Oh! Quão bom e quão suave é que os irmãos vivam em união."<br><strong>– Salmos 133:1</strong></p>
+
+                <div class="galeria">
+                    {% for foto in imagens %}
+                        <div class="foto-box">
+                            <img src="{{ url_for('static', filename=foto.arquivo) }}" alt="Equipe">
+                            <strong>{{ foto.descricao }}</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <br><a href="/">← Voltar</a>
+
+                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    ✝️ “Onde há unidade, ali o Senhor ordena a bênção.” – Salmos 133:3
+                </footer>
             </div>
         </body>
         </html>
