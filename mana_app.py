@@ -282,7 +282,7 @@ def familias():
         }
 
         cadastro_familias.append(nova_familia)
-        salvar_familias(cadastro_familias)  # <- salva no JSON
+        salvar_familias(cadastro_familias)
         return redirect(url_for("familias"))
 
     return render_template_string("""
@@ -294,7 +294,9 @@ def familias():
         </head>
         <body>
             <div class="container">
-                <h2>&#128106; Cadastro de Famílias</h2>
+                <h2>👨‍👩‍👧‍👦 Cadastro de Famílias do Ministério Maná</h2>
+                <p style="font-style: italic;">"Honra teu pai e tua mãe... para que vivas longos dias..."<br><strong>– Êxodo 20:12</strong></p>
+
                 <form method="post">
                     <label>Nome da família ou responsável:</label>
                     <input type="text" name="nome" required><br>
@@ -306,14 +308,20 @@ def familias():
                     <input type="text" name="data" required><br>
                     <input type="submit" value="Cadastrar">
                 </form>
+
                 <br>
-                <h3>Famílias Cadastradas</h3>
+                <h3>📋 Famílias Cadastradas</h3>
                 <ul>
                     {% for f in familias %}
                         <li><strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entrega: {{ f.data }}</li>
                     {% endfor %}
                 </ul>
-                <br><a href="/">&#8592; Voltar</a>
+
+                <br><a href="/">← Voltar</a>
+
+                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    💛 “Crê no Senhor Jesus e serás salvo, tu e tua casa.” – Atos 16:31
+                </footer>
             </div>
         </body>
         </html>
