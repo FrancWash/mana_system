@@ -181,6 +181,78 @@ def controle():
         </html>
     """, estoque=controle_estoque)
 
+    cadastro_familias = []
+
+@app.route("/")
+def home():
+    return render_template_string("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <title>Ministério Maná</title>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
+                <p style="font-size: 1.2em;">"Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br><strong>– Provérbios 19:17</strong></p>
+                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner Ministério Maná" class="banner-img">
+                <ul style="list-style: none; padding: 0;">
+                    <li><a href='/login'>🔐 Login</a></li>
+                    <li><a href='/escala'>📋 Escala</a></li>
+                    <li><a href='/controle'>📦 Controle de Estoque</a></li>
+                    <li><a href='/fotos'>👥 Fotos da Equipe</a></li>
+                    <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
+                </ul>
+            </div>
+        </body>
+        </html>
+    ")
+
+@app.route("/familias", methods=["GET", "POST"])
+def familias():
+    if request.method == "POST":
+        nome = request.form.get("nome")
+        lider = request.form.get("lider")
+        endereco = request.form.get("endereco")
+        data = request.form.get("data")
+        cadastro_familias.append({"nome": nome, "lider": lider, "endereco": endereco, "data": data})
+        return redirect(url_for("familias"))
+
+    return render_template_string("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <title>Cadastro de Famílias</title>
+        </head>
+        <body>
+            <div class="container">
+                <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
+                <form method="post">
+                    <label>Nome da família ou responsável:</label>
+                    <input type="text" name="nome" required><br>
+                    <label>Nome do líder de célula:</label>
+                    <input type="text" name="lider" required><br>
+                    <label>Endereço ou bairro (célula):</label>
+                    <input type="text" name="endereco" required><br>
+                    <label>Data da entrega da cesta:</label>
+                    <input type="text" name="data" required><br>
+                    <input type="submit" value="Cadastrar">
+                </form>
+                <br>
+                <h3>Famílias Cadastradas</h3>
+                <ul>
+                    {% for f in familias %}
+                        <li><strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entrega: {{ f.data }}</li>
+                    {% endfor %}
+                </ul>
+                <br><a href="/">← Voltar</a>
+            </div>
+        </body>
+        </html>
+    """, familias=cadastro_familias)
+
 @app.route("/fotos")
 def fotos():
     imagens = [
