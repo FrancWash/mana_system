@@ -1,6 +1,27 @@
 from flask import Flask, request, redirect, url_for, render_template_string, send_from_directory
 import os
 
+import json
+
+# Caminho absoluto do arquivo JSON
+json_path = os.path.join(os.path.dirname(__file__), "familias.json")
+
+# Função para carregar os dados existentes
+def carregar_familias():
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+# Função para salvar os dados
+def salvar_familias(dados):
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=4)
+
+# Lista que será usada pela aplicação
+cadastro_familias = carregar_familias()
+
 app = Flask(__name__)
 
 # Escala de Maio (mantida)
@@ -27,6 +48,10 @@ def home():
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
+            <header>
+                🌾 Ministério Maná - Sistema Interno
+            </header>
+
             <div class="container" style="text-align: center; background-color: #fff9e6; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto;">
                 <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner Ministério Maná" class="banner-img">
                 <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
@@ -39,6 +64,10 @@ def home():
                     <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
                 </ul>
             </div>
+
+            <footer>
+                ✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10
+            </footer>
         </body>
         </html>
     """)
@@ -191,7 +220,16 @@ def familias():
         lider = request.form.get("lider")
         endereco = request.form.get("endereco")
         data = request.form.get("data")
-        cadastro_familias.append({"nome": nome, "lider": lider, "endereco": endereco, "data": data})
+
+        nova_familia = {
+            "nome": nome,
+            "lider": lider,
+            "endereco": endereco,
+            "data": data
+        }
+
+        cadastro_familias.append(nova_familia)
+        salvar_familias(cadastro_familias)  # <- salva no JSON
         return redirect(url_for("familias"))
 
     return render_template_string("""
@@ -222,7 +260,7 @@ def familias():
                         <li><strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entrega: {{ f.data }}</li>
                     {% endfor %}
                 </ul>
-                <br><a href="/">← Voltar</a>
+                <br><a href="/">&#8592; Voltar</a>
             </div>
         </body>
         </html>

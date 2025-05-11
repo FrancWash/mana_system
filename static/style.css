@@ -68,3 +68,36 @@ form input[type="password"] {
     margin: 20px auto;
     display: block;
 }
+
+/* Cabeçalho */
+header {
+    background-color: #2e4a7d;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.6em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Espaço para o conteúdo não ficar atrás do cabeçalho */
+body {
+    padding-top: 80px;
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* Rodapé */
+footer {
+    background-color: #2e4a7d;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 30px;
+    font-size: 0.9em;
+    border-top: 3px solid #ccc;
+}
