@@ -181,33 +181,8 @@ def controle():
         </html>
     """, estoque=controle_estoque)
 
-    cadastro_familias = []
 
-@app.route("/")
-def home():
-    return render_template_string("""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            <title>Ministério Maná</title>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
-                <p style="font-size: 1.2em;">"Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br><strong>– Provérbios 19:17</strong></p>
-                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner Ministério Maná" class="banner-img">
-                <ul style="list-style: none; padding: 0;">
-                    <li><a href='/login'>🔐 Login</a></li>
-                    <li><a href='/escala'>📋 Escala</a></li>
-                    <li><a href='/controle'>📦 Controle de Estoque</a></li>
-                    <li><a href='/fotos'>👥 Fotos da Equipe</a></li>
-                    <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
-                </ul>
-            </div>
-        </body>
-        </html>
-    ")
+cadastro_familias = []
 
 @app.route("/familias", methods=["GET", "POST"])
 def familias():
@@ -277,7 +252,7 @@ def fotos():
                     </div>
                 {% endfor %}
                 <br>
-                <a href="/">← Voltar</a>
+                <a href="/">&#8592; Voltar</a>
             </div>
         </body>
         </html>
