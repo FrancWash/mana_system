@@ -163,7 +163,7 @@ def escala():
                     </select>
                     <select name="ano">
                         {% for a in range(2024, 2031) %}
-                            <option value="{{a}}" {% if ano == str(a) %}selected{% endif %}>{{a}}</option>
+                            <option value="{{a}}" {% if ano == a|string %}selected{% endif %}>{{a}}</option>
                         {% endfor %}
                     </select>
                     <button type="submit">🔄 Ver Escala</button>
