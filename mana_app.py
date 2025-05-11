@@ -27,20 +27,17 @@ def home():
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
-            <div class="container">
-                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner" class="banner-img">
+            <div class="container" style="text-align: center; background-color: #fff9e6; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto;">
+                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner Ministério Maná" class="banner-img">
                 <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
-                <p class="versiculo">
-                    "Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br>
-                    <em>– Provérbios 19:17</em>
-                </p>
-                <div class="menu-links">
-                    <p><a href="/login">🔐 Login</a></p>
-                    <p><a href="/escala">📋 Escala</a></p>
-                    <p><a href="/controle">📦 Controle</a></p>
-                    <p><a href="/fotos">👥 Fotos da Equipe</a></p>
-                    <p><a href="/familias">👨‍👩‍👧 Cadastro de Famílias</a></p>
-                </div>
+                <p style="font-style: italic;">"Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br><strong>– Provérbios 19:17</strong></p>
+                <ul style="list-style: none; padding: 0; font-size: 1.2em;">
+                    <li><a href='/login'>🔐 Login</a></li>
+                    <li><a href='/escala'>📋 Escala</a></li>
+                    <li><a href='/controle'>📦 Controle</a></li>
+                    <li><a href='/fotos'>👥 Fotos da Equipe</a></li>
+                    <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
+                </ul>
             </div>
         </body>
         </html>
