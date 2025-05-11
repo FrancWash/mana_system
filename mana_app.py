@@ -132,6 +132,7 @@ def escala():
         <body>
             <div class="container">
                 <h1>📋 Escala do Ministério Maná - Maio</h1>
+                <p style="font-style: italic; font-size: 1.1em;">"Se alguém serve, faça-o na força que Deus provê, para que em tudo Deus seja glorificado."<br><strong>– 1 Pedro 4:11</strong></p>
                 <form method="post">
                     <table>
                         <tr><th>Data</th><th>Responsáveis</th></tr>
@@ -147,6 +148,9 @@ def escala():
                 </form>
                 <br>
                 <a href="/">← Voltar</a>
+                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    🙌 “Tudo quanto fizerdes, fazei-o de coração, como para o Senhor e não para homens.” – Colossenses 3:23
+                </footer>
             </div>
         </body>
         </html>
