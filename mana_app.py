@@ -228,7 +228,7 @@ def familias():
         </head>
         <body>
             <div class="container">
-                <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
+                <h2>&#128106; Cadastro de Famílias</h2>
                 <form method="post">
                     <label>Nome da família ou responsável:</label>
                     <input type="text" name="nome" required><br>
