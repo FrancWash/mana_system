@@ -227,6 +227,7 @@ else:
 
 
 @app.route("/escala", methods=["GET", "POST"])
+@login_required
 def escala():
     hoje = datetime.now()
     mes_atual = request.args.get("mes") or hoje.strftime("%m")
@@ -325,6 +326,7 @@ controle_estoque = [
 
 
 @app.route("/controle", methods=["GET", "POST"])
+@login_required
 def controle():
     if request.method == "POST":
         for i in range(len(controle_estoque)):
@@ -382,6 +384,7 @@ cadastro_familias = []
 
 
 @app.route("/familias", methods=["GET", "POST"])
+@login_required
 def familias():
     mensagem = ""
     if request.method == "POST":
@@ -461,6 +464,7 @@ def familias():
 
 
 @app.route("/fotos")
+@login_required
 def fotos():
     imagens = [
         {"arquivo": "equipe1.jpg", "descricao": "Workshop da Assistência Social"},
