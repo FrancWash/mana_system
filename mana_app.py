@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template_string, send_from_directory
+from flask import Flask, request, redirect, url_for, render_template_string, send_from_directory, session
 import os
 import json
 from datetime import datetime
@@ -40,7 +40,6 @@ escala_maio = [
 ]
 
 # Middleware simples para proteger rotas
-
 def login_required(f):
     def wrapper(*args, **kwargs):
         if not session.get("logado"):
