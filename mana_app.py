@@ -6,6 +6,7 @@ from flask import (
     render_template_string,
     send_from_directory,
     session,
+    make_response,
 )
 import os
 import json
@@ -567,33 +568,23 @@ def fotos():
 @login_required
 def exportar_csv():
     import csv
-    import io
-    from flask import Response
+    from flask import make_response
 
-    # Cria um buffer na memória com codificação UTF-8 com BOM
-    output = io.StringIO()
-    writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+    si = []
+    si.append(["Nome", "Líder", "Endereço", "Entregas"])
 
-    writer.writerow(["Nome", "Líder", "Endereço", "Entregas"])
     for f in cadastro_familias:
-        writer.writerow(
-            [
-                f.get("nome", ""),
-                f.get("lider", ""),
-                f.get("endereco", ""),
-                ", ".join(f.get("entregas", [])),
-            ]
+        si.append(
+            [f["nome"], f["lider"], f["endereco"], ", ".join(f.get("entregas", []))]
         )
 
-    # Adiciona BOM manualmente (excel friendly)
-    bom = "\ufeff"
-    csv_content = bom + output.getvalue()
-
-    return Response(
-        csv_content,
-        mimetype="text/csv",
-        headers={"Content-Disposition": "attachment; filename=familias_exportadas.csv"},
+    response = make_response()
+    response.headers["Content-Disposition"] = (
+        "attachment; filename=familias_exportadas.csv"
     )
+    response.headers["Content-Type"] = "text/csv; charset=utf-8"
+    response.data = "\ufeff" + "\n".join([",".join(map(str, linha)) for linha in si])
+    return response
 
 
 if __name__ == "__main__":
