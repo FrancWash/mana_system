@@ -282,35 +282,39 @@ def familias():
         }
 
         cadastro_familias.append(nova_familia)
-        salvar_familias(cadastro_familias)
+        salvar_familias(cadastro_familias)  # <- salva no JSON
         return redirect(url_for("familias"))
 
     return render_template_string("""
         <!DOCTYPE html>
         <html>
         <head>
+            <title>Cadastro de Famílias - Ministério Maná</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            <title>Cadastro de Famílias</title>
         </head>
         <body>
             <div class="container">
-                <h2>👨‍👩‍👧‍👦 Cadastro de Famílias do Ministério Maná</h2>
-                <p style="font-style: italic;">"Honra teu pai e tua mãe... para que vivas longos dias..."<br><strong>– Êxodo 20:12</strong></p>
+                <h2>👨‍👩‍👧 Cadastro de Famílias Acompanhadas</h2>
+                <p style="font-style: italic;">"Reparte com sete e ainda com oito, porque não sabes que mal haverá sobre a terra."<br><strong>– Eclesiastes 11:2</strong></p>
 
                 <form method="post">
-                    <label>Nome da família ou responsável:</label>
+                    <label>👤 Nome da família ou responsável:</label>
                     <input type="text" name="nome" required><br>
-                    <label>Nome do líder de célula:</label>
+                    
+                    <label>🧑‍🤝‍🧑 Nome do líder de célula:</label>
                     <input type="text" name="lider" required><br>
-                    <label>Endereço ou bairro (célula):</label>
+                    
+                    <label>🏠 Endereço ou bairro (e célula):</label>
                     <input type="text" name="endereco" required><br>
-                    <label>Data da entrega da cesta:</label>
+                    
+                    <label>📅 Data da entrega da cesta:</label>
                     <input type="text" name="data" required><br>
+                    
                     <input type="submit" value="Cadastrar">
                 </form>
 
-                <br>
-                <h3>📋 Famílias Cadastradas</h3>
+                <hr>
+                <h3>📋 Famílias já cadastradas:</h3>
                 <ul>
                     {% for f in familias %}
                         <li><strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entrega: {{ f.data }}</li>
@@ -319,8 +323,8 @@ def familias():
 
                 <br><a href="/">← Voltar</a>
 
-                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
-                    💛 “Crê no Senhor Jesus e serás salvo, tu e tua casa.” – Atos 16:31
+                <footer style="margin-top: 30px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
+                    ✨ “A religião pura e sem mácula diante de Deus é visitar os órfãos e as viúvas nas suas tribulações...” – Tiago 1:27
                 </footer>
             </div>
         </body>
