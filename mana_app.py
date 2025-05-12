@@ -23,6 +23,7 @@ def salvar_familias(dados):
 cadastro_familias = carregar_familias()
 
 app = Flask(__name__)
+app.secret_key = "supersecretkey"
 
 # Escala de Maio (mantida)
 escala_maio = [
@@ -38,6 +39,16 @@ escala_maio = [
     {"data": "Quinta-feira 29/05", "responsaveis": "Adelmo"}
 ]
 
+# Middleware simples para proteger rotas
+
+def login_required(f):
+    def wrapper(*args, **kwargs):
+        if not session.get("logado"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    wrapper.__name__ = f.__name__
+    return wrapper
+
 @app.route("/")
 def home():
     return render_template_string("""
@@ -48,26 +59,13 @@ def home():
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
-            <header>
-                🌾 Ministério Maná - Sistema Interno
-            </header>
-
-            <div class="container" style="text-align: center; background-color: #fff9e6; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto;">
-                <img src="{{ url_for('static', filename='banner_mana.jpg') }}" alt="Banner Ministério Maná" class="banner-img">
+            <header>🌾 Ministério Maná - Sistema Interno</header>
+            <div class="container">
                 <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
                 <p style="font-style: italic;">"Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br><strong>– Provérbios 19:17</strong></p>
-                <ul style="list-style: none; padding: 0; font-size: 1.2em;">
-                    <li><a href='/login'>🔐 Login</a></li>
-                    <li><a href='/escala'>📋 Escala</a></li>
-                    <li><a href='/controle'>📦 Controle</a></li>
-                    <li><a href='/fotos'>👥 Fotos da Equipe</a></li>
-                    <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
-                </ul>
+                <a href='/login'>🔐 Login</a>
             </div>
-
-            <footer>
-                ✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10
-            </footer>
+            <footer>✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10</footer>
         </body>
         </html>
     """)
@@ -79,39 +77,60 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         if username == "admin" and password == "mana2025":
-            return redirect(url_for("escala"))
+            session["logado"] = True
+            return redirect(url_for("painel"))
         else:
             error = "Usuário ou senha incorretos."
     return render_template_string("""
         <!DOCTYPE html>
         <html>
         <head>
+            <title>Login</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            <title>Login - Ministério Maná</title>
         </head>
         <body>
             <div class="container">
                 <h2>🔐 Login Ministério Maná</h2>
-                <p style="font-style: italic; font-size: 1.1em;">"Entrega o teu caminho ao Senhor, confia nele, e o mais Ele fará."<br><strong>– Salmo 37:5</strong></p>
-                {% if error %}
-                    <p style="color:red;">{{ error }}</p>
-                {% endif %}
+                {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
                 <form method="post">
-                    <label>Usuário:</label>
-                    <input type="text" name="username"> <br>
-                    <label>Senha:</label>
-                    <input type="password" name="password"><br>
+                    <input type="text" name="username" placeholder="Usuário" required><br>
+                    <input type="password" name="password" placeholder="Senha" required><br>
                     <input type="submit" value="Entrar">
                 </form>
-                <br>
-                <a href="/">← Voltar</a>
-                <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
-                    🙏 “Nisto todos conhecerão que sois meus discípulos, se vos amardes uns aos outros.” – João 13:35
-                </footer>
             </div>
         </body>
         </html>
     """, error=error)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
+@app.route("/painel")
+@login_required
+def painel():
+    return render_template_string("""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Painel</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h1>📋 Painel do Ministério Maná</h1>
+                <ul>
+                    <li><a href='/escala'>📅 Escala</a></li>
+                    <li><a href='/controle'>📦 Controle</a></li>
+                    <li><a href='/fotos'>👥 Fotos</a></li>
+                    <li><a href='/familias'>👨‍👩‍👧 Cadastro de Famílias</a></li>
+                    <li><a href='/logout'>🚪 Sair</a></li>
+                </ul>
+            </div>
+        </body>
+        </html>
+    """)
 
 
 # Arquivo de escalas por mês
