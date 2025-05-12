@@ -1,10 +1,19 @@
-from flask import Flask, request, redirect, url_for, render_template_string, send_from_directory, session
+from flask import (
+    Flask,
+    request,
+    redirect,
+    url_for,
+    render_template_string,
+    send_from_directory,
+    session,
+)
 import os
 import json
 from datetime import datetime
 
 # Caminho absoluto do arquivo JSON
 json_path = os.path.join(os.path.dirname(__file__), "familias.json")
+
 
 # Função para carregar os dados existentes
 def carregar_familias():
@@ -14,10 +23,12 @@ def carregar_familias():
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
+
 # Função para salvar os dados
 def salvar_familias(dados):
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=4)
+
 
 # Lista que será usada pela aplicação
 cadastro_familias = carregar_familias()
@@ -36,8 +47,9 @@ escala_maio = [
     {"data": "Quinta-feira 22/05", "responsaveis": "Ana Claudia"},
     {"data": "Domingo 25/05 - Manhã", "responsaveis": "Clóvis / Fernanda"},
     {"data": "Domingo 25/05 - Noite", "responsaveis": "Thiago / Vanessa"},
-    {"data": "Quinta-feira 29/05", "responsaveis": "Adelmo"}
+    {"data": "Quinta-feira 29/05", "responsaveis": "Adelmo"},
 ]
+
 
 # Middleware simples para proteger rotas
 def login_required(f):
@@ -45,12 +57,15 @@ def login_required(f):
         if not session.get("logado"):
             return redirect(url_for("login"))
         return f(*args, **kwargs)
+
     wrapper.__name__ = f.__name__
     return wrapper
 
+
 @app.route("/")
 def home():
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -67,7 +82,9 @@ def home():
             <footer>✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10</footer>
         </body>
         </html>
-    """)
+    """
+    )
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -80,7 +97,8 @@ def login():
             return redirect(url_for("painel"))
         else:
             error = "Usuário ou senha incorretos."
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -99,17 +117,22 @@ def login():
             </div>
         </body>
         </html>
-    """, error=error)
+    """,
+        error=error,
+    )
+
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("home"))
 
+
 @app.route("/painel")
 @login_required
 def painel():
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html lang="pt-br">
         <head>
@@ -188,7 +211,9 @@ def painel():
             </div>
         </body>
         </html>
-    """)
+    """
+    )
+
 
 # Arquivo de escalas por mês
 ESCALAS_FILE = "escalas.json"
@@ -200,6 +225,7 @@ if os.path.exists(ESCALAS_FILE):
 else:
     escalas_mensais = {}
 
+
 @app.route("/escala", methods=["GET", "POST"])
 def escala():
     hoje = datetime.now()
@@ -208,19 +234,20 @@ def escala():
     chave = f"{mes_atual}-{ano_atual}"
 
     if chave not in escalas_mensais:
-        escalas_mensais[chave] = [
-            {"data": "", "responsaveis": ""} for _ in range(10)
-        ]
+        escalas_mensais[chave] = [{"data": "", "responsaveis": ""} for _ in range(10)]
 
     if request.method == "POST":
         for i in range(len(escalas_mensais[chave])):
             escalas_mensais[chave][i]["data"] = request.form.get(f"data_{i}", "")
-            escalas_mensais[chave][i]["responsaveis"] = request.form.get(f"resp_{i}", "")
+            escalas_mensais[chave][i]["responsaveis"] = request.form.get(
+                f"resp_{i}", ""
+            )
         with open(ESCALAS_FILE, "w") as f:
             json.dump(escalas_mensais, f)
         return redirect(url_for("escala", mes=mes_atual, ano=ano_atual))
 
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -263,7 +290,12 @@ def escala():
             </div>
         </body>
         </html>
-    """, escala=escalas_mensais[chave], mes=mes_atual, ano=ano_atual) 
+    """,
+        escala=escalas_mensais[chave],
+        mes=mes_atual,
+        ano=ano_atual,
+    )
+
 
 controle_estoque = [
     {"produto": "Arroz (1kg)", "caixa": 43, "prateleira": 0, "vencidos": 1},
@@ -288,19 +320,23 @@ controle_estoque = [
     {"produto": "Escova de dente", "caixa": 0, "prateleira": 14, "vencidos": 0},
     {"produto": "Absorventes", "caixa": 0, "prateleira": 16, "vencidos": 0},
     {"produto": "Papel higiênico", "caixa": 0, "prateleira": 9, "vencidos": 0},
-    {"produto": "Chupeta", "caixa": 0, "prateleira": 1, "vencidos": 0}
+    {"produto": "Chupeta", "caixa": 0, "prateleira": 1, "vencidos": 0},
 ]
+
 
 @app.route("/controle", methods=["GET", "POST"])
 def controle():
     if request.method == "POST":
         for i in range(len(controle_estoque)):
             controle_estoque[i]["caixa"] = int(request.form.get(f"caixa_{i}", 0))
-            controle_estoque[i]["prateleira"] = int(request.form.get(f"prateleira_{i}", 0))
+            controle_estoque[i]["prateleira"] = int(
+                request.form.get(f"prateleira_{i}", 0)
+            )
             controle_estoque[i]["vencidos"] = int(request.form.get(f"vencidos_{i}", 0))
         return redirect(url_for("controle"))
 
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -337,10 +373,13 @@ def controle():
             </div>
         </body>
         </html>
-    """, estoque=controle_estoque)
+    """,
+        estoque=controle_estoque,
+    )
 
 
 cadastro_familias = []
+
 
 @app.route("/familias", methods=["GET", "POST"])
 def familias():
@@ -352,22 +391,22 @@ def familias():
         data = request.form.get("data")
 
         # Verifica se a família já existe
-        familia_existente = next((f for f in cadastro_familias if f["nome"].lower() == nome.lower()), None)
+        familia_existente = next(
+            (f for f in cadastro_familias if f["nome"].lower() == nome.lower()), None
+        )
 
         if familia_existente:
             familia_existente["entregas"].append(data)
         else:
-            cadastro_familias.append({
-                "nome": nome,
-                "lider": lider,
-                "endereco": endereco,
-                "entregas": [data]
-            })
+            cadastro_familias.append(
+                {"nome": nome, "lider": lider, "endereco": endereco, "entregas": [data]}
+            )
 
         salvar_familias(cadastro_familias)
         return redirect(url_for("familias"))
 
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -390,29 +429,46 @@ def familias():
                 </form>
                 <br>
                 <h3>Famílias Cadastradas</h3>
-                <ul>
-                    {% for f in familias %}
-                        <li>
-                            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }}<br>
-                            🧺 Entregas: {{ f.entregas|length }} - {{ f.entregas|join(', ') }}
-                            {% if f.entregas|length == 3 %}<br><span style="color:orange;font-weight:bold;">⚠️ Terceira cesta! Validar com líder.</span>{% endif %}
-                        </li><br>
-                    {% endfor %}
-                </ul>
+<input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
+
+<ul id="lista-familias">
+    {% for f in familias %}
+        <li>
+            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    document.getElementById('filtro').addEventListener('input', function() {
+        const termo = this.value.toLowerCase();
+        const itens = document.querySelectorAll('#lista-familias li');
+
+        itens.forEach(item => {
+            const texto = item.textContent.toLowerCase();
+            item.style.display = texto.includes(termo) ? '' : 'none';
+        });
+    });
+</script>
+
                 <br><a href="/">&#8592; Voltar</a>
             </div>
         </body>
         </html>
-    """, familias=cadastro_familias)
+    """,
+        familias=cadastro_familias,
+    )
+
 
 @app.route("/fotos")
 def fotos():
     imagens = [
         {"arquivo": "equipe1.jpg", "descricao": "Workshop da Assistência Social"},
         {"arquivo": "equipe2.jpg", "descricao": "Organização do estoque no Maná"},
-        {"arquivo": "equipe3.jpg", "descricao": "Confraternização do Maná"}
+        {"arquivo": "equipe3.jpg", "descricao": "Confraternização do Maná"},
     ]
-    return render_template_string("""
+    return render_template_string(
+        """
         <!DOCTYPE html>
         <html>
         <head>
@@ -466,7 +522,10 @@ def fotos():
             </div>
         </body>
         </html>
-    """, imagens=imagens)
+    """,
+        imagens=imagens,
+    )
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
