@@ -268,20 +268,26 @@ cadastro_familias = []
 
 @app.route("/familias", methods=["GET", "POST"])
 def familias():
+    mensagem = ""
     if request.method == "POST":
-        nome = request.form.get("nome")
+        nome = request.form.get("nome").strip()
         lider = request.form.get("lider")
         endereco = request.form.get("endereco")
         data = request.form.get("data")
 
-        nova_familia = {
-            "nome": nome,
-            "lider": lider,
-            "endereco": endereco,
-            "data": data
-        }
+        # Verifica se a família já existe
+        familia_existente = next((f for f in cadastro_familias if f["nome"].lower() == nome.lower()), None)
 
-        cadastro_familias.append(nova_familia)
+        if familia_existente:
+            familia_existente["entregas"].append(data)
+        else:
+            cadastro_familias.append({
+                "nome": nome,
+                "lider": lider,
+                "endereco": endereco,
+                "entregas": [data]
+            })
+
         salvar_familias(cadastro_familias)
         return redirect(url_for("familias"))
 
@@ -293,10 +299,9 @@ def familias():
             <title>Cadastro de Famílias</title>
         </head>
         <body>
-            <div class="container" style="background-color: #fffaf0; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto;">
-                <h2 style="text-align:center;">👨‍👩‍👧 Cadastro de Famílias</h2>
-                <p style="text-align:center; font-style: italic;">“Levai as cargas uns dos outros, e assim cumprireis a lei de Cristo.”<br><strong>– Gálatas 6:2</strong></p>
-                <form method="post" style="margin-top: 20px;">
+            <div class="container">
+                <h2>&#128106; Cadastro de Famílias</h2>
+                <form method="post">
                     <label>Nome da família ou responsável:</label>
                     <input type="text" name="nome" required><br>
                     <label>Nome do líder de célula:</label>
@@ -305,20 +310,21 @@ def familias():
                     <input type="text" name="endereco" required><br>
                     <label>Data da entrega da cesta:</label>
                     <input type="text" name="data" required><br>
-                    <input type="submit" value="Cadastrar">
+                    <input type="submit" value="Cadastrar/Atualizar">
                 </form>
                 <br>
                 <h3>Famílias Cadastradas</h3>
                 <ul>
                     {% for f in familias %}
-                        <li><strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entrega: {{ f.data }}</li>
+                        <li>
+                            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }}<br>
+                            🧺 Entregas: {{ f.entregas|length }} - {{ f.entregas|join(', ') }}
+                            {% if f.entregas|length == 3 %}<br><span style="color:orange;font-weight:bold;">⚠️ Terceira cesta! Validar com líder.</span>{% endif %}
+                        </li><br>
                     {% endfor %}
                 </ul>
-                <br><a href="/">← Voltar</a>
+                <br><a href="/">&#8592; Voltar</a>
             </div>
-            <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; text-align:center; border-radius: 8px;">
-                ✨ “Reparte com sete e ainda com oito, porque não sabes que mal haverá sobre a terra.” – Eclesiastes 11:2
-            </footer>
         </body>
         </html>
     """, familias=cadastro_familias)
