@@ -458,6 +458,38 @@ def familias():
             </div>
         </body>
         </html>
+<br>
+<h3>Famílias Cadastradas</h3>
+<input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
+
+<ul id="lista-familias">
+    {% for f in familias %}
+        <li>
+            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
+        </li>
+    {% endfor %}
+</ul>
+
+<!-- Script de filtro -->
+<script>
+    document.getElementById('filtro').addEventListener('input', function() {
+        const termo = this.value.toLowerCase();
+        const itens = document.querySelectorAll('#lista-familias li');
+        itens.forEach(item => {
+            const texto = item.textContent.toLowerCase();
+            item.style.display = texto.includes(termo) ? '' : 'none';
+        });
+    });
+</script>
+
+<!-- Botão de exportação -->
+<br><br>
+<form action="/exportar_csv" method="get">
+    <button type="submit">📤 Exportar CSV</button>
+</form>
+
+<br><a href="/">&#8592; Voltar</a>
+
     """,
         familias=cadastro_familias,
     )
@@ -528,6 +560,39 @@ def fotos():
         </html>
     """,
         imagens=imagens,
+    )
+
+
+@app.route("/exportar_csv")
+@login_required
+def exportar_csv():
+    import csv
+    import io
+    from flask import Response
+
+    # Cria um buffer na memória com codificação UTF-8 com BOM
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+
+    writer.writerow(["Nome", "Líder", "Endereço", "Entregas"])
+    for f in cadastro_familias:
+        writer.writerow(
+            [
+                f.get("nome", ""),
+                f.get("lider", ""),
+                f.get("endereco", ""),
+                ", ".join(f.get("entregas", [])),
+            ]
+        )
+
+    # Adiciona BOM manualmente (excel friendly)
+    bom = "\ufeff"
+    csv_content = bom + output.getvalue()
+
+    return Response(
+        csv_content,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=familias_exportadas.csv"},
     )
 
 
