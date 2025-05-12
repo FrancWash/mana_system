@@ -2,73 +2,95 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f2f5;
     padding: 10px;
+    margin: 0;
     color: #333;
-    font-size: 18px; /* Aumenta a legibilidade */
+    font-size: 1.2em;
 }
 
 .container {
-    background-color: #fff7e6;
+    background-color: #fff9e6;
     padding: 20px;
     border-radius: 12px;
-    max-width: 100%;
     margin: auto;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-width: 95%;
+    width: 95vw;
+    box-sizing: border-box;
+}
+
+header, footer {
+    background-color: #2e4a7d;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-weight: bold;
+    font-size: 1.2em;
 }
 
 h1, h2 {
-    font-size: 1.6em;
     color: #2e4a7d;
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.3em;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+label, input, select, button, table {
+    font-size: 1.2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input, select {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button, input[type="submit"] {
+    background-color: #2e4a7d;
+    color: white;
+    padding: 12px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #1a2f59;
 }
 
 a {
-    text-decoration: none;
     color: #1a73e8;
     font-weight: bold;
-    font-size: 1.1em;
+    text-decoration: none;
+    font-size: 1.2em;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-input[type="text"], input[type="password"], input[type="number"] {
+table {
     width: 100%;
-    padding: 12px;
-    font-size: 1em;
-    margin-top: 5px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
     border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 10px;
+    text-align: left;
+    font-size: 1.1em;
 }
 
-button, input[type="submit"] {
-    background-color: #2e4a7d;
-    color: white;
-    padding: 12px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 6px;
-    width: 100%;
-}
-
-footer {
-    margin-top: 40px;
-    font-size: 1em;
-    text-align: center;
-    color: white;
-    background-color: #2e4a7d;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-@media screen and (max-width: 600px) {
-    h1, h2 {
-        font-size: 1.4em;
-    }
-    .container {
-        padding: 16px;
-    }
-    input, button {
-        font-size: 1em;
-    }
+.alerta {
+    color: #d9534f;
+    font-weight: bold;
+    font-size: 1.1em;
 }
