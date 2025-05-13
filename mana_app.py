@@ -385,23 +385,26 @@ cadastro_familias = []
 
 
 @app.route("/familias", methods=["GET", "POST"])
-@login_required
 def familias():
-    mensagem = ""
+    familia_para_editar = None
+    id_editar = request.args.get("editar")
+
     if request.method == "POST":
         nome = request.form.get("nome").strip()
         lider = request.form.get("lider")
         endereco = request.form.get("endereco")
         data = request.form.get("data")
 
-        # Verifica se a família já existe
-        familia_existente = next(
-            (f for f in cadastro_familias if f["nome"].lower() == nome.lower()), None
-        )
-
-        if familia_existente:
-            familia_existente["entregas"].append(data)
+        # Se estiver editando
+        if request.form.get("id_editar"):
+            idx = int(request.form.get("id_editar"))
+            cadastro_familias[idx]["nome"] = nome
+            cadastro_familias[idx]["lider"] = lider
+            cadastro_familias[idx]["endereco"] = endereco
+            if data and data not in cadastro_familias[idx]["entregas"]:
+                cadastro_familias[idx]["entregas"].append(data)
         else:
+            # Novo cadastro
             cadastro_familias.append(
                 {"nome": nome, "lider": lider, "endereco": endereco, "entregas": [data]}
             )
@@ -409,90 +412,72 @@ def familias():
         salvar_familias(cadastro_familias)
         return redirect(url_for("familias"))
 
+    # Se clicou em editar
+    if id_editar is not None:
+        try:
+            familia_para_editar = cadastro_familias[int(id_editar)]
+        except:
+            familia_para_editar = None
+
     return render_template_string(
         """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            <title>Cadastro de Famílias</title>
-        </head>
-        <body>
-            <div class="container">
-                <h2>&#128106; Cadastro de Famílias</h2>
-                <form method="post">
-                    <label>Nome da família ou responsável:</label>
-                    <input type="text" name="nome" required><br>
-                    <label>Nome do líder de célula:</label>
-                    <input type="text" name="lider" required><br>
-                    <label>Endereço ou bairro (célula):</label>
-                    <input type="text" name="endereco" required><br>
-                    <label>Data da entrega da cesta:</label>
-                    <input type="text" name="data" required><br>
-                    <input type="submit" value="Cadastrar/Atualizar">
-                </form>
-                <br>
-                <h3>Famílias Cadastradas</h3>
-<input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <title>Cadastro de Famílias</title>
+    </head>
+    <body>
+        <div class="container">
+            <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
+            <form method="post">
+                {% if familia %}
+                    <input type="hidden" name="id_editar" value="{{ loop.index0 }}">
+                {% endif %}
+                <label>Nome da família ou responsável:</label>
+                <input type="text" name="nome" required value="{{ familia.nome if familia else '' }}"><br>
+                <label>Nome do líder de célula:</label>
+                <input type="text" name="lider" required value="{{ familia.lider if familia else '' }}"><br>
+                <label>Endereço ou bairro (célula):</label>
+                <input type="text" name="endereco" required value="{{ familia.endereco if familia else '' }}"><br>
+                <label>Data da entrega da cesta:</label>
+                <input type="text" name="data" required><br>
+                <input type="submit" value="Cadastrar/Atualizar">
+            </form>
 
-<ul id="lista-familias">
-    {% for f in familias %}
-        <li>
-            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-        </li>
-    {% endfor %}
-</ul>
+            <h3>Famílias Cadastradas</h3>
 
-<script>
-    document.getElementById('filtro').addEventListener('input', function() {
-        const termo = this.value.toLowerCase();
-        const itens = document.querySelectorAll('#lista-familias li');
+            <input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
 
-        itens.forEach(item => {
-            const texto = item.textContent.toLowerCase();
-            item.style.display = texto.includes(termo) ? '' : 'none';
-        });
-    });
-</script>
+            <ul id="lista-familias">
+                {% for f in familias %}
+                    <li>
+                        <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
+                        <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a>
+                    </li>
+                {% endfor %}
+            </ul>
 
-                <br><a href="/">&#8592; Voltar</a>
-            </div>
-        </body>
-        </html>
-<br>
-<h3>Famílias Cadastradas</h3>
-<input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
+            <br>
+            <a href="/">← Voltar</a>
+        </div>
 
-<ul id="lista-familias">
-    {% for f in familias %}
-        <li>
-            <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-        </li>
-    {% endfor %}
-</ul>
+        <script>
+            document.getElementById('filtro').addEventListener('input', function() {
+                const termo = this.value.toLowerCase();
+                const itens = document.querySelectorAll('#lista-familias li');
 
-<!-- Script de filtro -->
-<script>
-    document.getElementById('filtro').addEventListener('input', function() {
-        const termo = this.value.toLowerCase();
-        const itens = document.querySelectorAll('#lista-familias li');
-        itens.forEach(item => {
-            const texto = item.textContent.toLowerCase();
-            item.style.display = texto.includes(termo) ? '' : 'none';
-        });
-    });
-</script>
-
-<!-- Botão de exportação -->
-<br><br>
-<form action="/exportar_csv" method="get">
-    <button type="submit">📤 Exportar CSV</button>
-</form>
-
-<br><a href="/">&#8592; Voltar</a>
-
+                itens.forEach(item => {
+                    const texto = item.textContent.toLowerCase();
+                    item.style.display = texto.includes(termo) ? '' : 'none';
+                });
+            });
+        </script>
+    </body>
+    </html>
     """,
         familias=cadastro_familias,
+        familia=familia_para_editar,
     )
 
 
