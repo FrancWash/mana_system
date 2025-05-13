@@ -453,7 +453,7 @@ def familias():
                 {% for f in familias %}
                     <li>
                         <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-                        <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a>
+                        <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a> | <a href="{{ url_for('excluir_familia', idx=loop.index0) }}" onclick="return confirm('Tem certeza que deseja excluir esta família?')">🗑️ Excluir</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -570,6 +570,15 @@ def exportar_csv():
     response.headers["Content-Type"] = "text/csv; charset=utf-8"
     response.data = "\ufeff" + "\n".join([",".join(map(str, linha)) for linha in si])
     return response
+
+
+@app.route("/excluir_familia/<int:idx>")
+@login_required
+def excluir_familia(idx):
+    if 0 <= idx < len(cadastro_familias):
+        del cadastro_familias[idx]
+        salvar_familias(cadastro_familias)
+    return redirect(url_for("familias"))
 
 
 if __name__ == "__main__":
