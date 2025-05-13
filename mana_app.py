@@ -385,9 +385,15 @@ cadastro_familias = []
 
 
 @app.route("/familias", methods=["GET", "POST"])
+@login_required
 def familias():
-    familia_para_editar = None
-    id_editar = request.args.get("editar")
+    editar_idx = request.args.get("editar", type=int)
+    excluir_idx = request.args.get("excluir", type=int)
+
+    if excluir_idx is not None and 0 <= excluir_idx < len(cadastro_familias):
+        del cadastro_familias[excluir_idx]
+        salvar_familias(cadastro_familias)
+        return redirect(url_for("familias"))
 
     if request.method == "POST":
         nome = request.form.get("nome").strip()
@@ -395,91 +401,95 @@ def familias():
         endereco = request.form.get("endereco")
         data = request.form.get("data")
 
-        # Se estiver editando
-        if request.form.get("id_editar"):
-            idx = int(request.form.get("id_editar"))
-            cadastro_familias[idx]["nome"] = nome
-            cadastro_familias[idx]["lider"] = lider
-            cadastro_familias[idx]["endereco"] = endereco
-            if data and data not in cadastro_familias[idx]["entregas"]:
-                cadastro_familias[idx]["entregas"].append(data)
+        if editar_idx is not None and 0 <= editar_idx < len(cadastro_familias):
+            cadastro_familias[editar_idx]["nome"] = nome
+            cadastro_familias[editar_idx]["lider"] = lider
+            cadastro_familias[editar_idx]["endereco"] = endereco
+            cadastro_familias[editar_idx]["entregas"] = [data]
         else:
-            # Novo cadastro
-            cadastro_familias.append(
-                {"nome": nome, "lider": lider, "endereco": endereco, "entregas": [data]}
+            familia_existente = next(
+                (f for f in cadastro_familias if f["nome"].lower() == nome.lower()),
+                None,
             )
+            if familia_existente:
+                familia_existente["entregas"].append(data)
+            else:
+                cadastro_familias.append(
+                    {
+                        "nome": nome,
+                        "lider": lider,
+                        "endereco": endereco,
+                        "entregas": [data],
+                    }
+                )
 
         salvar_familias(cadastro_familias)
         return redirect(url_for("familias"))
 
-    # Se clicou em editar
-    if id_editar is not None:
-        try:
-            familia_para_editar = cadastro_familias[int(id_editar)]
-        except:
-            familia_para_editar = None
-
-            # Ordena alfabeticamente por nome
+    familia_para_editar = (
+        cadastro_familias[editar_idx]
+        if editar_idx is not None and 0 <= editar_idx < len(cadastro_familias)
+        else None
+    )
     familias_ordenadas = sorted(cadastro_familias, key=lambda f: f["nome"].lower())
 
     return render_template_string(
         """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <title>Cadastro de Famílias</title>
-    </head>
-    <body>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Cadastro de Famílias</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
         <div class="container">
             <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
             <form method="post">
-                {% if familia %}
-                    <input type="hidden" name="id_editar" value="{{ loop.index0 }}">
-                {% endif %}
                 <label>Nome da família ou responsável:</label>
-                <input type="text" name="nome" required value="{{ familia.nome if familia else '' }}"><br>
+                <input type="text" name="nome" required value="{{ familia.nome if familia else '' }}">
                 <label>Nome do líder de célula:</label>
-                <input type="text" name="lider" required value="{{ familia.lider if familia else '' }}"><br>
+                <input type="text" name="lider" required value="{{ familia.lider if familia else '' }}">
                 <label>Endereço ou bairro (célula):</label>
-                <input type="text" name="endereco" required value="{{ familia.endereco if familia else '' }}"><br>
+                <input type="text" name="endereco" required value="{{ familia.endereco if familia else '' }}">
                 <label>Data da entrega da cesta:</label>
-                <input type="text" name="data" required><br>
+                <input type="text" name="data" required value="{{ familia.entregas[-1] if familia else '' }}">
                 <input type="submit" value="Cadastrar/Atualizar">
             </form>
 
             <h3>Famílias Cadastradas</h3>
-
             <input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
 
             <ul id="lista-familias">
                 {% for f in familias %}
-                    <li>
-                        <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-                        <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a> | <a href="{{ url_for('excluir_familia', idx=loop.index0) }}" onclick="return confirm('Tem certeza que deseja excluir esta família?')">🗑️ Excluir</a>
-                    </li>
+                <li>
+                    <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
+                    <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a> |
+                    <a href="{{ url_for('familias', excluir=loop.index0) }}" onclick="return confirm('Tem certeza que deseja excluir esta família?')">🗑️ Excluir</a>
+                </li>
                 {% endfor %}
             </ul>
 
             <br>
+            <a href="/exportar_csv" class="botao-exportar">📥 Exportar CSV</a>
+            <br><br>
             <a href="/">← Voltar</a>
         </div>
 
         <script>
-            document.getElementById('filtro').addEventListener('input', function() {
-                const termo = this.value.toLowerCase();
-                const itens = document.querySelectorAll('#lista-familias li');
-
-                itens.forEach(item => {
-                    const texto = item.textContent.toLowerCase();
-                    item.style.display = texto.includes(termo) ? '' : 'none';
-                });
+        document.getElementById('filtro').addEventListener('input', function() {
+            const termo = this.value.toLowerCase();
+            const itens = document.querySelectorAll('#lista-familias li');
+            itens.forEach(item => {
+                const texto = item.textContent.toLowerCase();
+                item.style.display = texto.includes(termo) ? '' : 'none';
             });
+        });
         </script>
-    </body>
-    </html>
+        </body>
+        </html>
     """,
         familias=familias_ordenadas,
+        familia=familia_para_editar,
     )
 
 
