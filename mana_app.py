@@ -464,10 +464,21 @@ def familias():
                 <li>
                     <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
                     <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a> |
-                    <a href="{{ url_for('familias', excluir=loop.index0) }}" onclick="return confirm('Tem certeza que deseja excluir esta família?')">🗑️ Excluir</a>
+                    <a href="#" onclick="abrirModal({{ loop.index0 }}); return false;">🗑️ Excluir</a>
                 </li>
                 {% endfor %}
             </ul>
+            <!-- Modal de confirmação -->
+<div id="modal-confirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:30px; border-radius:12px; text-align:center; max-width:400px; width:90%; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+        <h3 style="color:#d9534f;">⚠️ Confirmação</h3>
+        <p>Você tem certeza que deseja excluir esta família?</p>
+        <div style="margin-top: 20px;">
+            <button onclick="fecharModal()" style="padding:10px 20px; border:none; border-radius:6px; background:#ccc; margin-right:10px; cursor:pointer;">Cancelar</button>
+            <button onclick="confirmarExclusao()" style="padding:10px 20px; border:none; border-radius:6px; background:#d9534f; color:white; cursor:pointer;">Confirmar</button>
+        </div>
+    </div>
+</div>
 
             <br>
             <a href="/exportar_csv" class="botao-exportar">📥 Exportar CSV</a>
@@ -484,6 +495,23 @@ def familias():
                 item.style.display = texto.includes(termo) ? '' : 'none';
             });
         });
+        let idParaExcluir = null;
+
+    function abrirModal(id) {
+        idParaExcluir = id;
+        document.getElementById("modal-confirmacao").style.display = "flex";
+    }
+
+    function fecharModal() {
+        document.getElementById("modal-confirmacao").style.display = "none";
+        idParaExcluir = null;
+    }
+
+    function confirmarExclusao() {
+        if (idParaExcluir !== null) {
+            window.location.href = `/familias?excluir=${idParaExcluir}`;
+        }
+    }
         </script>
         </body>
         </html>
