@@ -419,6 +419,9 @@ def familias():
         except:
             familia_para_editar = None
 
+            # Ordena alfabeticamente por nome
+    familias_ordenadas = sorted(cadastro_familias, key=lambda f: f["nome"].lower())
+
     return render_template_string(
         """
     <!DOCTYPE html>
@@ -476,8 +479,7 @@ def familias():
     </body>
     </html>
     """,
-        familias=cadastro_familias,
-        familia=familia_para_editar,
+        familias=familias_ordenadas,
     )
 
 
