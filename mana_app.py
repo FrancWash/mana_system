@@ -358,6 +358,16 @@ def escala():
         <button type="submit">💾 Salvar Alterações</button>
     </form>
 {% else %}
+    <table>
+        <tr><th>Data</th><th>Responsáveis</th></tr>
+        {% for item in escala %}
+        <tr>
+            <td>{{ item.data }}</td>
+            <td>{{ item.responsaveis }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
     <p style="color: #d9534f; font-weight: bold; background-color: #ffe6e6; padding: 12px; border-radius: 10px;">
         🔒 Você não tem permissão para editar a escala.<br>Visualização apenas.
     </p>
