@@ -13,6 +13,9 @@ import json
 from datetime import datetime
 
 import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 # Conexão com o banco PostgreSQL
@@ -21,11 +24,11 @@ import psycopg2
 
 def get_db_connection():
     conn = psycopg2.connect(
-        host="tramway.proxy.rlwy.net",
-        database="railway",
-        user="postgres",
-        password="vOkduqQLXLdJRVEGwaohVhdkjFcPOguh",
-        port="46634",
+        host=os.getenv("PGHOST"),
+        database=os.getenv("PGDATABASE"),
+        user=os.getenv("PGUSER"),
+        password=os.getenv("PGPASSWORD"),
+        port=os.getenv("PGPORT"),
     )
     return conn
 
