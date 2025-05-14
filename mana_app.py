@@ -12,27 +12,86 @@ import os
 import json
 from datetime import datetime
 
-# Caminho absoluto do arquivo JSON
-json_path = os.path.join(os.path.dirname(__file__), "familias.json")
+import psycopg2
 
 
-# Função para carregar os dados existentes
+# Conexão com o banco PostgreSQL
+import psycopg2
+
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        host="tramway.proxy.rlwy.net",
+        database="railway",
+        user="postgres",
+        password="vOkduqQLXLdJRVEGwaohVhdkjFcPOguh",
+        port="46634",
+    )
+    return conn
+
+
+def criar_tabela_familias():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS familias (
+            id SERIAL PRIMARY KEY,
+            nome TEXT NOT NULL,
+            lider TEXT NOT NULL,
+            endereco TEXT NOT NULL,
+            entregas TEXT[]
+        )
+    """
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def salvar_familias(lista_familias):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Apaga tudo antes de inserir (simples, para substituir por completo)
+    cur.execute("DELETE FROM familias")
+
+    for f in lista_familias:
+        cur.execute(
+            "INSERT INTO familias (nome, lider, endereco, entregas) VALUES (%s, %s, %s, %s)",
+            (f["nome"], f["lider"], f["endereco"], f["entregas"]),
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 def carregar_familias():
-    try:
-        with open(json_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT nome, lider, endereco, entregas FROM familias")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
 
+    familias = []
+    for row in rows:
+        familias.append(
+            {
+                "nome": row[0],
+                "lider": row[1],
+                "endereco": row[2],
+                "entregas": row[
+                    3
+                ],  # Isso já vem como lista do tipo ARRAY no PostgreSQL
+            }
+        )
 
-# Função para salvar os dados
-def salvar_familias(dados):
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(dados, f, ensure_ascii=False, indent=4)
+    return familias
 
 
 # Lista que será usada pela aplicação
-cadastro_familias = carregar_familias()
+# cadastro_familias = carregar_familias()
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -381,7 +440,7 @@ def controle():
     )
 
 
-cadastro_familias = []
+cadastro_familias = carregar_familias()
 
 
 @app.route("/familias", methods=["GET", "POST"])
@@ -622,5 +681,6 @@ def excluir_familia(idx):
 
 
 if __name__ == "__main__":
+    criar_tabela_familias()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
