@@ -149,17 +149,24 @@ def home():
     )
 
 
+USUARIOS_EDITORES = ["renata", "thiago", "aline"]
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
-    if request.method == "POST":
-        username = request.form.get("username")
+    if request.method == "POST" and session.get("pode_editar_escala"):
+        username = request.form.get("username").lower()
         password = request.form.get("password")
-        if username == "admin" and password == "mana2025":
+
+        if password == "mana2025":
             session["logado"] = True
+            session["usuario"] = username
+            session["pode_editar_escala"] = username in USUARIOS_EDITORES
             return redirect(url_for("painel"))
         else:
             error = "Usuário ou senha incorretos."
+
     return render_template_string(
         """
         <!DOCTYPE html>
@@ -336,19 +343,25 @@ def escala():
                     <button type="submit">🔄 Ver Escala</button>
                 </form>
                 <br>
-                <form method="post">
-                    <table>
-                        <tr><th>Data</th><th>Responsáveis</th></tr>
-                        {% for i in range(escala|length) %}
-                        <tr>
-                            <td><input type="text" name="data_{{ i }}" value="{{ escala[i].data }}"></td>
-                            <td><input type="text" name="resp_{{ i }}" value="{{ escala[i].responsaveis }}"></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    <br>
-                    <button type="submit">Salvar Alterações</button>
-                </form>
+                {% if session.get("pode_editar_escala") %}
+    <form method="post">
+        <table>
+            <tr><th>Data</th><th>Responsáveis</th></tr>
+            {% for i in range(escala|length) %}
+            <tr>
+                <td><input type="text" name="data_{{ i }}" value="{{ escala[i].data }}"></td>
+                <td><input type="text" name="resp_{{ i }}" value="{{ escala[i].responsaveis }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit">💾 Salvar Alterações</button>
+    </form>
+{% else %}
+    <p style="color: #d9534f; font-weight: bold; background-color: #ffe6e6; padding: 12px; border-radius: 10px;">
+        🔒 Você não tem permissão para editar a escala.<br>Visualização apenas.
+    </p>
+{% endif %}
                 <br>
                 <a href="/">Voltar</a>
             </div>
