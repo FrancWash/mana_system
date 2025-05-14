@@ -164,3 +164,37 @@ td {
 .excluir:hover {
     background-color: #c82333;
 }
+
+
+.familia-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: 0.2s;
+}
+
+.familia-box:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.familia-box p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.familia-box button {
+    font-weight: bold;
+}
+
+/* Ajuste nos botões */
+.editar,
+.excluir {
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 5px;
+}
