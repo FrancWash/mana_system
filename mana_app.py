@@ -524,17 +524,22 @@ def familias():
             </form>
 
             <h3>Famílias Cadastradas</h3>
-            <input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
+<input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
 
-            <ul id="lista-familias">
-                {% for f in familias %}
-                <li>
-                    <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-                    <button onclick="location.href='{{ url_for('familias', editar=loop.index0) }}'" class="editar">✏️ Editar</button>
-                    <button onclick="abrirModal({{ loop.index0 }});" class="excluir">🗑️ Excluir</button>
-                </li>
-                {% endfor %}
-            </ul>
+<div id="lista-familias">
+    {% for f in familias %}
+    <div class="familia-box" style="margin-bottom: 15px;">
+        <p>
+            <strong>{{ f.nome }}</strong><br>
+            Líder: {{ f.lider }}<br>
+            Endereço: {{ f.endereco }}<br>
+            Entregas: {{ f.entregas | join(', ') }}
+        </p>
+        <button onclick="location.href='{{ url_for('familias', editar=loop.index0) }}'" class="editar">✏️ Editar</button>
+        <button onclick="abrirModal({{ loop.index0 }});" class="excluir">🗑️ Excluir</button>
+    </div>
+    {% endfor %}
+</div>
             <!-- Modal de confirmação -->
 <div id="modal-confirmacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
     <div style="background:#fff; padding:30px; border-radius:12px; text-align:center; max-width:400px; width:90%; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
