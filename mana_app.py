@@ -155,7 +155,7 @@ USUARIOS_EDITORES = ["renata", "thiago", "aline"]
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
-    if request.method == "POST" and session.get("pode_editar_escala"):
+    if request.method == "POST":
         username = request.form.get("username").lower()
         password = request.form.get("password")
 
