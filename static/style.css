@@ -17,7 +17,8 @@ body {
     box-sizing: border-box;
 }
 
-header, footer {
+header,
+footer {
     background-color: #2e4a7d;
     color: white;
     text-align: center;
@@ -26,7 +27,8 @@ header, footer {
     font-size: 1.2em;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: #2e4a7d;
     font-size: 1.6em;
 }
@@ -37,20 +39,26 @@ h3 {
     font-weight: bold;
 }
 
-label, input, select, button, table {
+label,
+input,
+select,
+button,
+table {
     font-size: 1.2em;
     width: 100%;
     box-sizing: border-box;
 }
 
-input, select {
+input,
+select {
     padding: 12px;
     margin-bottom: 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
 }
 
-button, input[type="submit"] {
+button,
+input[type="submit"] {
     background-color: #2e4a7d;
     color: white;
     padding: 12px;
@@ -61,7 +69,8 @@ button, input[type="submit"] {
     width: 100%;
 }
 
-button:hover, input[type="submit"]:hover {
+button:hover,
+input[type="submit"]:hover {
     background-color: #1a2f59;
 }
 
@@ -82,7 +91,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: left;
@@ -92,5 +102,34 @@ th, td {
 .alerta {
     color: #d9534f;
     font-weight: bold;
+    font-size: 1.1em;
+}
+
+.editar {
+    background-color: #ffc107;
+    color: black;
+    margin-right: 10px;
+}
+
+.excluir {
+    background-color: #dc3545;
+    color: white;
+}
+
+.editar:hover {
+    background-color: #e0a800;
+}
+
+.excluir:hover {
+    background-color: #c82333;
+}
+
+.alerta-sucesso {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     font-size: 1.1em;
 }

@@ -486,6 +486,7 @@ def familias():
                 )
 
         salvar_familias(cadastro_familias)
+        session["mensagem_sucesso"] = "✅ Cadastro salvo com sucesso!"
         return redirect(url_for("familias"))
 
     familia_para_editar = (
@@ -504,6 +505,10 @@ def familias():
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
+        {% if session.get('mensagem_sucesso') %}
+    <div class="alerta-sucesso">{{ session.get('mensagem_sucesso') }}</div>
+    {% set _ = session.pop('mensagem_sucesso') %}
+{% endif %}
         <div class="container">
             <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
             <form method="post">
@@ -525,8 +530,8 @@ def familias():
                 {% for f in familias %}
                 <li>
                     <strong>{{ f.nome }}</strong> | Líder: {{ f.lider }} | {{ f.endereco }} | Entregas: {{ f.entregas | join(', ') }}
-                    <a href="{{ url_for('familias', editar=loop.index0) }}">✏️ Editar</a> |
-                    <a href="#" onclick="abrirModal({{ loop.index0 }}); return false;">🗑️ Excluir</a>
+                    <button onclick="location.href='{{ url_for('familias', editar=loop.index0) }}'" class="editar">✏️ Editar</button>
+                    <button onclick="abrirModal({{ loop.index0 }});" class="excluir">🗑️ Excluir</button>
                 </li>
                 {% endfor %}
             </ul>
