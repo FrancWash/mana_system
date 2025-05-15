@@ -17,6 +17,115 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+RELATORIOS_FILE = "relatorios.json"
+
+# Carrega ou inicializa relatórios
+if os.path.exists(RELATORIOS_FILE):
+    with open(RELATORIOS_FILE, "r") as f:
+        relatorios = json.load(f)
+else:
+    relatorios = []
+
+
+@app.route("/relatorio", methods=["GET", "POST"])
+@login_required
+def relatorio():
+    if request.method == "POST":
+        data = request.form.get("data") or datetime.now().strftime("%d/%m/%Y")
+        periodo = request.form.get("periodo")
+        responsaveis = request.form.get("responsaveis")
+        vencimento_junho = request.form.get("vencimento_junho")
+        vencimento_julho = request.form.get("vencimento_julho")
+        higiene = request.form.get("higiene")
+        cestas = request.form.get("cestas")
+        realizado = request.form.get("realizado")
+        doacoes = request.form.get("doacoes")
+        faltando = request.form.get("faltando")
+        solicitacoes = request.form.get("solicitacoes")
+        palavra = request.form.get("palavra")
+
+        relatorios.append(
+            {
+                "data": data,
+                "periodo": periodo,
+                "responsaveis": responsaveis,
+                "vencimento_junho": vencimento_junho,
+                "vencimento_julho": vencimento_julho,
+                "higiene": higiene,
+                "cestas": cestas,
+                "realizado": realizado,
+                "doacoes": doacoes,
+                "faltando": faltando,
+                "solicitacoes": solicitacoes,
+                "palavra": palavra,
+            }
+        )
+
+        with open(RELATORIOS_FILE, "w") as f:
+            json.dump(relatorios, f)
+
+        return redirect(url_for("relatorio"))
+
+    return render_template_string(
+        """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Relatório do Dia - Ministério Maná</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <h2>📋 Registro de Relatório do Dia</h2>
+            <form method="post">
+                <label>Data:</label>
+                <input type="text" name="data" placeholder="dd/mm/aaaa">
+                <label>Período (ex: Manhã / Noite):</label>
+                <input type="text" name="periodo">
+                <label>Responsáveis:</label>
+                <input type="text" name="responsaveis">
+                <label>Vencimento em Junho:</label>
+                <textarea name="vencimento_junho"></textarea>
+                <label>Vencimento a partir de Julho:</label>
+                <textarea name="vencimento_julho"></textarea>
+                <label>Kits de Higiene:</label>
+                <textarea name="higiene"></textarea>
+                <label>Cestas Montadas:</label>
+                <textarea name="cestas"></textarea>
+                <label>Realizado:</label>
+                <textarea name="realizado"></textarea>
+                <label>Doações Recebidas:</label>
+                <textarea name="doacoes"></textarea>
+                <label>Itens em Falta:</label>
+                <textarea name="faltando"></textarea>
+                <label>Solicitações para próxima escala:</label>
+                <textarea name="solicitacoes"></textarea>
+                <label>Compartilhamento da Palavra:</label>
+                <textarea name="palavra"></textarea>
+                <input type="submit" value="Salvar Relatório">
+            </form>
+
+            <h3>📑 Relatórios Anteriores</h3>
+            <ul>
+                {% for r in relatorios|reverse %}
+                <li>
+                    <strong>{{ r.data }} - {{ r.periodo }}</strong><br>
+                    Responsáveis: {{ r.responsaveis }}<br>
+                    Cestas: {{ r.cestas }}<br>
+                    Itens em falta: {{ r.faltando }}<br>
+                    Palavra: {{ r.palavra }}<br><br>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <br><a href="/">← Voltar ao painel</a>
+        </div>
+    </body>
+    </html>
+    """,
+        relatorios=relatorios,
+    )
+
 
 # Conexão com o banco PostgreSQL
 import psycopg2
