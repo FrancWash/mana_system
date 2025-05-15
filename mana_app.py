@@ -547,20 +547,25 @@ def controle():
                 <p style="font-style: italic;">"Porque tive fome, e me destes de comer..."<br><strong>– Mateus 25:35</strong></p>
 
                 <form method="post">
-                    <table>
-                        <tr><th>Produto</th><th>Caixa</th><th>Prateleira</th><th>Vencidos</th></tr>
-                        {% for i in range(estoque|length) %}
-                        <tr>
-                            <td>{{ estoque[i].produto }}</td>
-                            <td><input type="number" name="caixa_{{ i }}" value="{{ estoque[i].caixa }}"></td>
-                            <td><input type="number" name="prateleira_{{ i }}" value="{{ estoque[i].prateleira }}"></td>
-                            <td><input type="number" name="vencidos_{{ i }}" value="{{ estoque[i].vencidos }}"></td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    <br>
-                    <button type="submit">Salvar Alterações</button>
-                </form>
+    <table>
+        <tr>
+            <th>🛒 Produto</th>
+            <th>📦 Caixa<br><span style="font-size: 0.8em; font-weight: normal;">(quantidade nas caixas)</span></th>
+            <th>📚 Prateleira<br><span style="font-size: 0.8em; font-weight: normal;">(quantidade à mostra)</span></th>
+            <th>⚠️ Vencidos<br><span style="font-size: 0.8em; font-weight: normal;">(expirados ou quase)</span></th>
+        </tr>
+        {% for i in range(estoque|length) %}
+        <tr>
+            <td><strong>{{ estoque[i].produto }}</strong></td>
+            <td><input type="number" name="caixa_{{ i }}" value="{{ estoque[i].caixa }}" placeholder="Ex: 10"></td>
+            <td><input type="number" name="prateleira_{{ i }}" value="{{ estoque[i].prateleira }}" placeholder="Ex: 5"></td>
+            <td><input type="number" name="vencidos_{{ i }}" value="{{ estoque[i].vencidos }}" placeholder="Ex: 1"></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <button type="submit">💾 Salvar Contagem</button>
+</form>
                 <br>
                 <a href="/relatorio_gerado" style="display: inline-block; margin-top: 20px; padding: 12px 20px; background-color: #2e4a7d; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
                 📝 Gerar Relatório do Dia
