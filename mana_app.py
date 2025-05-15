@@ -878,6 +878,20 @@ def relatorio_gerado():
             <div class="container">
                 <h2>📋 Relatório Gerado Automaticamente</h2>
                 <textarea style="width: 100%; height: 500px;">{{ relatorio }}</textarea>
+                <div style="text-align: center; margin-top: 20px;">
+    <button onclick="copiarRelatorio()" style="padding: 12px 20px; background-color: #2e4a7d; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer;">
+        📋 Copiar Relatório
+    </button>
+</div>
+
+<script>
+function copiarRelatorio() {
+    const textarea = document.querySelector("textarea");
+    textarea.select();
+    document.execCommand("copy");
+    alert("📋 Relatório copiado para a área de transferência!");
+}
+</script>
                 <br><br>
                 <a href="/controle">← Voltar para o Controle</a>
             </div>
