@@ -27,6 +27,88 @@ else:
     relatorios = []
 
 
+# Conexão com o banco PostgreSQL
+import psycopg2
+
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        host=os.getenv("PGHOST"),
+        database=os.getenv("PGDATABASE"),
+        user=os.getenv("PGUSER"),
+        password=os.getenv("PGPASSWORD"),
+        port=os.getenv("PGPORT"),
+    )
+    return conn
+
+
+def criar_tabela_familias():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS familias (
+            id SERIAL PRIMARY KEY,
+            nome TEXT NOT NULL,
+            lider TEXT NOT NULL,
+            endereco TEXT NOT NULL,
+            entregas TEXT[]
+        )
+    """
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def salvar_familias(lista_familias):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Apaga tudo antes de inserir (simples, para substituir por completo)
+    cur.execute("DELETE FROM familias")
+
+    for f in lista_familias:
+        cur.execute(
+            "INSERT INTO familias (nome, lider, endereco, entregas) VALUES (%s, %s, %s, %s)",
+            (f["nome"], f["lider"], f["endereco"], f["entregas"]),
+        )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def carregar_familias():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT nome, lider, endereco, entregas FROM familias")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    familias = []
+    for row in rows:
+        familias.append(
+            {
+                "nome": row[0],
+                "lider": row[1],
+                "endereco": row[2],
+                "entregas": row[
+                    3
+                ],  # Isso já vem como lista do tipo ARRAY no PostgreSQL
+            }
+        )
+
+    return familias
+
+
+# Lista que será usada pela aplicação
+# cadastro_familias = carregar_familias()
+
+app = Flask(__name__)
+app.secret_key = "supersecretkey"
+
+
 @app.route("/relatorio", methods=["GET", "POST"])
 @login_required
 def relatorio():
@@ -126,87 +208,6 @@ def relatorio():
         relatorios=relatorios,
     )
 
-
-# Conexão com o banco PostgreSQL
-import psycopg2
-
-
-def get_db_connection():
-    conn = psycopg2.connect(
-        host=os.getenv("PGHOST"),
-        database=os.getenv("PGDATABASE"),
-        user=os.getenv("PGUSER"),
-        password=os.getenv("PGPASSWORD"),
-        port=os.getenv("PGPORT"),
-    )
-    return conn
-
-
-def criar_tabela_familias():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS familias (
-            id SERIAL PRIMARY KEY,
-            nome TEXT NOT NULL,
-            lider TEXT NOT NULL,
-            endereco TEXT NOT NULL,
-            entregas TEXT[]
-        )
-    """
-    )
-    conn.commit()
-    cur.close()
-    conn.close()
-
-
-def salvar_familias(lista_familias):
-    conn = get_db_connection()
-    cur = conn.cursor()
-
-    # Apaga tudo antes de inserir (simples, para substituir por completo)
-    cur.execute("DELETE FROM familias")
-
-    for f in lista_familias:
-        cur.execute(
-            "INSERT INTO familias (nome, lider, endereco, entregas) VALUES (%s, %s, %s, %s)",
-            (f["nome"], f["lider"], f["endereco"], f["entregas"]),
-        )
-    conn.commit()
-    cur.close()
-    conn.close()
-
-
-def carregar_familias():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT nome, lider, endereco, entregas FROM familias")
-    rows = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    familias = []
-    for row in rows:
-        familias.append(
-            {
-                "nome": row[0],
-                "lider": row[1],
-                "endereco": row[2],
-                "entregas": row[
-                    3
-                ],  # Isso já vem como lista do tipo ARRAY no PostgreSQL
-            }
-        )
-
-    return familias
-
-
-# Lista que será usada pela aplicação
-# cadastro_familias = carregar_familias()
-
-app = Flask(__name__)
-app.secret_key = "supersecretkey"
 
 # Escala de Maio (mantida)
 escala_maio = [
