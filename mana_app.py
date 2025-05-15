@@ -571,7 +571,7 @@ def controle():
                 📝 Gerar Relatório do Dia
                 </a>
                 <br>
-                <a href="/">← Voltar</a>
+                <a href="{{ url_for('painel') }}">← Voltar ao Painel</a>
 
                 <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
                     💙 “A alma generosa prosperará; quem dá alívio aos outros, alívio receberá.” – Provérbios 11:25
@@ -700,7 +700,7 @@ def familias():
             <br>
             <a href="/exportar_csv" class="botao-exportar">📥 Exportar CSV</a>
             <br><br>
-            <a href="/">← Voltar</a>
+            <a href="{{ url_for('painel') }}">← Voltar ao Painel</a>
         </div>
 
         <script>
@@ -793,7 +793,7 @@ def fotos():
                     {% endfor %}
                 </div>
 
-                <br><a href="/">← Voltar</a>
+                <br><a href="{{ url_for('painel') }}">← Voltar ao Painel</a>
 
                 <footer style="margin-top: 40px; background-color: #2e4a7d; color: white; padding: 10px; border-radius: 8px;">
                     ✝️ “Onde há unidade, ali o Senhor ordena a bênção.” – Salmos 133:3
@@ -883,6 +883,16 @@ def relatorio_gerado():
             <title>Relatório Gerado</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
+        <script>
+function copiarRelatorio() {
+    const textarea = document.querySelector("textarea");
+    textarea.select();
+    document.execCommand("copy");
+
+    // Alerta visual
+    alert("✅ Relatório copiado com sucesso!");
+}
+</script>
         <body>
        <div class="container" style="max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
     <h2 style="color: #2e4a7d; text-align: center; margin-bottom: 20px;">📋 Relatório Gerado</h2>
