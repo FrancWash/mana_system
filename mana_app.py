@@ -240,22 +240,63 @@ def home():
     return render_template_string(
         """
         <!DOCTYPE html>
-        <html>
+        <html lang="pt-br">
         <head>
+            <meta charset="UTF-8">
             <title>Ministério Maná</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <style>
+                .versiculo-container {
+                    background-color: #f4f8ff;
+                    padding: 40px;
+                    margin: 40px auto;
+                    border-radius: 16px;
+                    max-width: 700px;
+                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                    animation: fadeInUp 1.5s ease;
+                }
+
+                .versiculo-container h1 {
+                    font-size: 1.8em;
+                    color: #2e4a7d;
+                    margin-bottom: 20px;
+                }
+
+                .versiculo-container p {
+                    font-size: 1.4em;
+                    font-style: italic;
+                    color: #555;
+                }
+
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            </style>
         </head>
         <body>
             <header>🌾 Ministério Maná - Sistema Interno</header>
-            <div class="container">
-                <h1>🙌 Bem-vindo ao Sistema do Ministério Maná</h1>
-                <p style="font-style: italic;">"Quem se compadece do pobre empresta ao Senhor, que lhe retribuirá o benefício."<br><strong>– Provérbios 19:17</strong></p>
-                <a href='/login'>🔐 Login</a>
+
+            <div class="versiculo-container">
+                <h1>🙌 Bem-vindo ao Ministério Maná</h1>
+                <p><strong>“E este será o seu nome: O SENHOR está ali.”</strong><br>— Ezequiel 48:35</p>
             </div>
+
+            <div class="container" style="text-align: center;">
+                <a href='/login'>🔐 Entrar no Sistema</a>
+            </div>
+
             <footer>✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10</footer>
         </body>
         </html>
-    """
+        """
     )
 
 
@@ -483,7 +524,7 @@ def escala():
     </p>
 {% endif %}
                 <br>
-                <a href="/">Voltar</a>
+                <a href="{{ url_for('painel') }}">← Voltar ao Painel</a>
             </div>
         </body>
         </html>
