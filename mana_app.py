@@ -562,7 +562,10 @@ def controle():
                     <br>
                     <button type="submit">Salvar Alterações</button>
                 </form>
-
+                <br>
+                <a href="/relatorio_gerado" style="display: inline-block; margin-top: 20px; padding: 12px 20px; background-color: #2e4a7d; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                📝 Gerar Relatório do Dia
+                </a>
                 <br>
                 <a href="/">← Voltar</a>
 
