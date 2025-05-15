@@ -382,7 +382,7 @@ def painel():
 
                 <div class="painel-links">
                     <a href='/escala' class="painel-card">📅 Escala</a>
-                    <a href='/relatorio' class="painel-card">📝 Relatórios</a>
+                    <a href='/controle' class="painel-card">📄 Gerar Relatório</a>
                     <a href='/controle' class="painel-card">📦 Controle</a>
                     <a href='/fotos' class="painel-card">👥 Fotos da Equipe</a>
                     <a href='/familias' class="painel-card">👨‍👩‍👧 Cadastro de Famílias</a>
