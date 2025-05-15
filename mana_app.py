@@ -827,6 +827,65 @@ def excluir_familia(idx):
     return redirect(url_for("familias"))
 
 
+@app.route("/relatorio_gerado")
+@login_required
+def relatorio_gerado():
+    hoje = datetime.now().strftime("%d/%m/%Y")
+    periodo = "Manhã"  # Você pode ajustar isso manualmente depois se quiser
+    responsaveis = session.get("usuario", "Desconhecido")
+
+    relatorio_texto = f"""
+    📆 {periodo} - {hoje}
+    Alistados: {responsaveis}
+
+    🔜 Alimentos com Vencimento em JUNHO de 2025
+    🔜 Alimentos com Vencimento a partir JULHO de 2025
+    """
+
+    for item in controle_estoque:
+        total = item["caixa"] + item["prateleira"]
+        if total > 0:
+            relatorio_texto += f"- {str(total).zfill(2)} {item['produto']}\n"
+
+    relatorio_texto += """
+
+    🔜 Kits de Limpeza e Higiene
+    - (Preencher manualmente)
+
+    🔺 Cestas Completas
+    - (Preencher manualmente)
+
+    ✅ Relatório:
+    Realizado: (Ex: Contagem dos alimentos, Montagem de cestas, etc.)
+    Doações: (Se houve saída ou doação)
+    ITENS EM FALTA: (Listar o que está em falta)
+    Solicitações para próxima escala: (Limpeza, completar cestas, etc.)
+
+    📖 Compartilhamento da palavra: (Culto / Palavra do dia)
+    """
+
+    return render_template_string(
+        """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Relatório Gerado</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h2>📋 Relatório Gerado Automaticamente</h2>
+                <textarea style="width: 100%; height: 500px;">{{ relatorio }}</textarea>
+                <br><br>
+                <a href="/controle">← Voltar para o Controle</a>
+            </div>
+        </body>
+        </html>
+        """,
+        relatorio=relatorio_texto,
+    )
+
+
 if __name__ == "__main__":
     criar_tabela_familias()
     port = int(os.environ.get("PORT", 5000))
