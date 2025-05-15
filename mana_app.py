@@ -648,16 +648,20 @@ def familias():
         <div class="container">
             <h2>👨‍👩‍👧 Cadastro de Famílias</h2>
             <form method="post">
-                <label>Nome da família ou responsável:</label>
-                <input type="text" name="nome" required value="{{ familia.nome if familia else '' }}">
-                <label>Nome do líder de célula:</label>
-                <input type="text" name="lider" required value="{{ familia.lider if familia else '' }}">
-                <label>Endereço ou bairro (célula):</label>
-                <input type="text" name="endereco" required value="{{ familia.endereco if familia else '' }}">
-                <label>Data da entrega da cesta:</label>
-                <input type="text" name="data" required value="{{ familia.entregas[-1] if familia else '' }}">
-                <input type="submit" value="Cadastrar/Atualizar">
-            </form>
+    <label>👤 Nome da família ou responsável:</label>
+    <input type="text" name="nome" placeholder="Ex: Maria da Silva" required value="{{ familia.nome if familia else '' }}">
+
+    <label>🕊️ Nome do líder de célula:</label>
+    <input type="text" name="lider" placeholder="Ex: Irmã Renata" required value="{{ familia.lider if familia else '' }}">
+
+    <label>📍 Endereço ou bairro (célula):</label>
+    <input type="text" name="endereco" placeholder="Ex: Jardim Clementino - Célula da Paz" required value="{{ familia.endereco if familia else '' }}">
+
+    <label>📦 Data da entrega da cesta:</label>
+    <input type="text" name="data" placeholder="Ex: 19/05/2025" required value="{{ familia.entregas[-1] if familia else '' }}">
+
+    <input type="submit" value="📥 Cadastrar / Atualizar">
+</form>
 
             <h3>Famílias Cadastradas</h3>
 <input type="text" id="filtro" placeholder="🔍 Buscar por nome, líder ou bairro..." style="padding: 10px; margin-bottom: 15px; width: 100%; font-size: 1.1em; border-radius: 5px; border: 1px solid #ccc;">
