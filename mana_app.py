@@ -109,6 +109,32 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 
+# Escala de Maio (mantida)
+escala_maio = [
+    {"data": "Quinta 08/05", "responsaveis": "Ana Claudia"},
+    {"data": "Domingo 11/05 - Manhã", "responsaveis": "Clóvis / Telma"},
+    {"data": "Domingo 11/05 - Noite", "responsaveis": "Vanessa / Franc"},
+    {"data": "Quinta-feira 15/05", "responsaveis": "Renata"},
+    {"data": "Domingo 18/05 - Manhã", "responsaveis": "Vicentina / Franc"},
+    {"data": "Domingo 18/05 - Noite", "responsaveis": "Thiago / Telma"},
+    {"data": "Quinta-feira 22/05", "responsaveis": "Ana Claudia"},
+    {"data": "Domingo 25/05 - Manhã", "responsaveis": "Clóvis / Fernanda"},
+    {"data": "Domingo 25/05 - Noite", "responsaveis": "Thiago / Vanessa"},
+    {"data": "Quinta-feira 29/05", "responsaveis": "Adelmo"},
+]
+
+
+# Middleware simples para proteger rotas
+def login_required(f):
+    def wrapper(*args, **kwargs):
+        if not session.get("logado"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+
+    wrapper.__name__ = f.__name__
+    return wrapper
+
+
 @app.route("/relatorio", methods=["GET", "POST"])
 @login_required
 def relatorio():
@@ -207,32 +233,6 @@ def relatorio():
     """,
         relatorios=relatorios,
     )
-
-
-# Escala de Maio (mantida)
-escala_maio = [
-    {"data": "Quinta 08/05", "responsaveis": "Ana Claudia"},
-    {"data": "Domingo 11/05 - Manhã", "responsaveis": "Clóvis / Telma"},
-    {"data": "Domingo 11/05 - Noite", "responsaveis": "Vanessa / Franc"},
-    {"data": "Quinta-feira 15/05", "responsaveis": "Renata"},
-    {"data": "Domingo 18/05 - Manhã", "responsaveis": "Vicentina / Franc"},
-    {"data": "Domingo 18/05 - Noite", "responsaveis": "Thiago / Telma"},
-    {"data": "Quinta-feira 22/05", "responsaveis": "Ana Claudia"},
-    {"data": "Domingo 25/05 - Manhã", "responsaveis": "Clóvis / Fernanda"},
-    {"data": "Domingo 25/05 - Noite", "responsaveis": "Thiago / Vanessa"},
-    {"data": "Quinta-feira 29/05", "responsaveis": "Adelmo"},
-]
-
-
-# Middleware simples para proteger rotas
-def login_required(f):
-    def wrapper(*args, **kwargs):
-        if not session.get("logado"):
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-
-    wrapper.__name__ = f.__name__
-    return wrapper
 
 
 @app.route("/")
