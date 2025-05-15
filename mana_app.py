@@ -280,7 +280,7 @@ def home():
                     }
                 }
             </style>
-            <link rel="manifest" href="/manifest.json">
+            <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icon-192.png') }}">
 <meta name="theme-color" content="#2e4a7d">
 <script>
