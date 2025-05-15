@@ -285,7 +285,7 @@ def home():
 <meta name="theme-color" content="#2e4a7d">
 <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
+        navigator.serviceWorker.register('{{ url_for('static', filename='service-worker.js') }}');
     }
 </script>
         </head>
