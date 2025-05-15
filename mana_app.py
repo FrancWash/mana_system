@@ -355,83 +355,92 @@ def painel():
     return render_template_string(
         """
         <!DOCTYPE html>
-        <html lang="pt-br">
-        <head>
-            <meta charset="UTF-8">
-            <title>Painel - Ministério Maná</title>
-            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-            <style>
-                .painel-container {
-                    max-width: 800px;
-                    margin: auto;
-                    padding: 30px;
-                    background-color: #fff9e6;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                    text-align: center;
-                }
-                .painel-header {
-                    font-size: 1.6em;
-                    margin-bottom: 10px;
-                    color: #2e4a7d;
-                }
-                .painel-sub {
-                    font-style: italic;
-                    color: #666;
-                    margin-bottom: 30px;
-                }
-                .painel-links {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                    gap: 20px;
-                    margin-bottom: 20px;
-                }
-                .painel-card {
-                    padding: 20px;
-                    border-radius: 10px;
-                    background-color: #f0f2ff;
-                    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-                    font-weight: bold;
-                    font-size: 1.1em;
-                    color: #2e4a7d;
-                    transition: 0.2s;
-                }
-                .painel-card:hover {
-                    background-color: #e3e8ff;
-                    transform: scale(1.02);
-                    cursor: pointer;
-                }
-                .logout {
-                    margin-top: 30px;
-                    display: inline-block;
-                    padding: 10px 20px;
-                    background-color: #e74c3c;
-                    color: white;
-                    border-radius: 6px;
-                    font-weight: bold;
-                    text-decoration: none;
-                }
-                .logout:hover {
-                    background-color: #c0392b;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="painel-container">
-                <div class="painel-header">📋 Painel do Ministério Maná</div>
-                <div class="painel-sub">"Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor, e não aos homens." – Colossenses 3:23</div>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel - Ministério Maná</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f5;
+            margin: 0;
+            padding: 0;
+        }
+        .painel-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #fff9e6;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .painel-header {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #2e4a7d;
+        }
+        .painel-sub {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .painel-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+        }
+        .painel-card {
+            padding: 20px;
+            border-radius: 16px;
+            background-color: #eef2ff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2e4a7d;
+            transition: 0.2s;
+        }
+        .painel-card:hover {
+            background-color: #dce4ff;
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+        .logout {
+            margin-top: 40px;
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .logout:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="painel-container">
+        <div class="painel-header">📋 Painel do Ministério Maná</div>
+        <div class="painel-sub">
+            "Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor, e não aos homens."<br>
+            <strong>– Colossenses 3:23</strong>
+        </div>
 
-                <div class="painel-links">
-                    <a href='/escala' class="painel-card">📅 Escala</a>
-                    <a href='/controle' class="painel-card">📦 Controle</a>
-                    <a href='/fotos' class="painel-card">👥 Fotos da Equipe</a>
-                    <a href='/familias' class="painel-card">👨‍👩‍👧 Cadastro de Famílias</a>
-                </div>
+        <div class="painel-links">
+            <a href="/escala" class="painel-card">📅<br>Escala</a>
+            <a href="/controle" class="painel-card">📦<br>Controle</a>
+            <a href="/fotos" class="painel-card">👥<br>Equipe</a>
+            <a href="/familias" class="painel-card">👨‍👩‍👧<br>Famílias</a>
+        </div>
 
-                <a href='/logout' class="logout">🚪 Sair do Sistema</a>
-            </div>
-        </body>
-        </html>
+        <a href="/logout" class="logout">🚪 Sair do Sistema</a>
+    </div>
+</body>
+</html>
     """
     )
 
