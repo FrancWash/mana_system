@@ -1,0 +1,21 @@
+{
+    "name": "Ministério Maná",
+    "short_name": "Maná",
+    "description": "Sistema interno do Ministério Maná",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f0f2f5",
+    "theme_color": "#2e4a7d",
+    "icons": [
+        {
+            "src": "/static/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
