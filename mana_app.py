@@ -565,7 +565,7 @@ def escala():
 
 
 controle_estoque = [
-    {"produto": "Arroz (1kg)", "caixa": 43, "prateleira": 0, "vencidos": 1},
+    {"produto": "Arroz (5kg)", "caixa": 43, "prateleira": 0, "vencidos": 1},
     {"produto": "Feijão", "caixa": 43, "prateleira": 9, "vencidos": 2},
     {"produto": "Óleo", "caixa": 8, "prateleira": 15, "vencidos": 1},
     {"produto": "Fubá", "caixa": 0, "prateleira": 41, "vencidos": 0},
@@ -908,103 +908,124 @@ def excluir_familia(idx):
     return redirect(url_for("familias"))
 
 
-@app.route("/relatorio_gerado")
+@app.route("/relatorio_gerado", methods=["GET", "POST"])
 @login_required
 def relatorio_gerado():
     hoje = datetime.now().strftime("%d/%m/%Y")
-    periodo = "Manhã"  # Você pode ajustar isso manualmente depois se quiser
+    periodo = "Manhã"
     responsaveis = session.get("usuario", "Desconhecido")
 
-    relatorio_texto = f"""
-    📆 {periodo} - {hoje}
-    Alistados: {responsaveis}
+    # Geração automática do relatório baseado no controle
+    relatorio_gerado = f"""
+📆 {periodo} - {hoje}
+Alistados: {responsaveis}
 
-    🔜 Alimentos com Vencimento em JUNHO de 2025
-    🔜 Alimentos com Vencimento a partir JULHO de 2025
-    """
+🔜 Alimentos com Vencimento em JUNHO de 2025
+
+🔜 Alimentos com Vencimento a partir JULHO de 2025
+"""
 
     for item in controle_estoque:
         total = item["caixa"] + item["prateleira"]
         if total > 0:
-            relatorio_texto += f"- {str(total).zfill(2)} {item['produto']}\n"
+            relatorio_gerado += f"- {str(total).zfill(2)} {item['produto']}\n"
 
-    relatorio_texto += """
+    relatorio_gerado += """
+\n🔜 Kits de Limpeza e Higiene
 
-    🔜 Kits de Limpeza e Higiene
-    - (Preencher manualmente)
+🔺 Cestas Completas
 
-    🔺 Cestas Completas
-    - (Preencher manualmente)
+✅ Relatório: \n
+Recebidos:
 
-    ✅ Relatório:
-    Realizado: (Ex: Contagem dos alimentos, Montagem de cestas, etc.)
-    Doações: (Se houve saída ou doação)
-    ITENS EM FALTA: (Listar o que está em falta)
-    Solicitações para próxima escala: (Limpeza, completar cestas, etc.)
+Realizado:
 
-    📖 Compartilhamento da palavra: (Culto / Palavra do dia)
-    """
+Doações:
+
+🚨 ITENS EM FALTA
+
+Solicitação para próxima escala
+
+📖 Compartilhamento da palavra:
+"""
+
+    # Se o formulário for submetido
+    if request.method == "POST":
+        relatorio_customizado = request.form.get("relatorio")
+        return render_template_string(
+            """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Relatório Editado</title>
+                <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            </head>
+            <body>
+            <div class="container">
+                <h2>📋 Relatório Atualizado</h2>
+                <textarea readonly style="width: 100%; height: 500px;">{{ relatorio }}</textarea>
+                <br><br>
+                <a href="/controle">← Voltar para o Controle</a>
+            </div>
+            </body>
+            </html>
+            """,
+            relatorio=relatorio_customizado,
+        )
 
     return render_template_string(
         """
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Relatório Gerado</title>
+            <title>Editar Relatório</title>
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+            <style>
+                textarea {
+                    font-family: monospace;
+                    font-size: 1.1em;
+                    padding: 15px;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    width: 100%;
+                    height: 500px;
+                    box-sizing: border-box;
+                }
+                button {
+                    background-color: #2e4a7d;
+                    color: white;
+                    padding: 12px 20px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1.1em;
+                    cursor: pointer;
+                }
+            </style>
+            <script>
+                function copiarRelatorio() {
+                    const textarea = document.querySelector("textarea");
+                    textarea.select();
+                    document.execCommand("copy");
+                    alert("📋 Relatório copiado com sucesso!");
+                }
+            </script>
         </head>
-        <script>
-function copiarRelatorio() {
-    const textarea = document.querySelector("textarea");
-    textarea.select();
-    document.execCommand("copy");
-
-    // Alerta visual
-    alert("✅ Relatório copiado com sucesso!");
-}
-</script>
         <body>
-       <div class="container" style="max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-    <h2 style="color: #2e4a7d; text-align: center; margin-bottom: 20px;">📋 Relatório Gerado</h2>
-    
-    <textarea readonly style="width: 100%; height: 500px; padding: 15px; font-size: 1.1em; line-height: 1.6; border-radius: 10px; border: 1px solid #ccc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); resize: none; background-color: #f9f9f9;">{{ relatorio }}</textarea>
-    
-    <br><br>
-    <div style="text-align: center;">
-        <button onclick="copiarRelatorio()" style="padding: 12px 20px; background-color: #2e4a7d; color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer;">
-            📋 Copiar Relatório
-        </button>
-    </div>
-    
-    <br>
-    <div style="text-align: center;">
-        <a href="/controle" style="font-size: 1.1em; color: #1a73e8; font-weight: bold;">← Voltar para o Controle</a>
-    </div>
-</div>
-
-<script>
-function copiarRelatorio() {
-    const textarea = document.querySelector("textarea");
-    textarea.select();
-    document.execCommand("copy");
-    alert("📋 Relatório copiado para a área de transferência!");
-}
-
-<script>
-function copiarRelatorio() {
-    const textarea = document.querySelector("textarea");
-    textarea.select();
-    document.execCommand("copy");
-    alert("📋 Relatório copiado para a área de transferência!");
-}
-</script>
+        <div class="container">
+            <h2>📋 Relatório Gerado Automaticamente</h2>
+            <form method="post">
+                <textarea name="relatorio">{{ relatorio }}</textarea>
                 <br><br>
-                <a href="/controle">← Voltar para o Controle</a>
-            </div>
+                <button type="submit">💾 Salvar Alterações</button>
+                <button type="button" onclick="copiarRelatorio()">📋 Copiar Relatório</button>
+            </form>
+            <br><br>
+            <a href="/controle">← Voltar para o Controle</a>
+        </div>
         </body>
         </html>
         """,
-        relatorio=relatorio_texto,
+        relatorio=relatorio_gerado,
     )
 
 
