@@ -1016,7 +1016,11 @@ Solicitação para próxima escala
         <div class="container">
             <h2>📋 Relatório Gerado Automaticamente</h2>
             <form method="post">
-                <textarea name="relatorio">{{ relatorio }}</textarea>
+    <input type="hidden" name="data" value="{{ data }}">
+    <input type="hidden" name="periodo" value="{{ periodo }}">
+    <input type="hidden" name="responsaveis" value="{{ responsaveis }}">
+    
+    <textarea name="relatorio">{{ relatorio }}</textarea>
                 <br><br>
                 <button type="submit">💾 Salvar Alterações</button>
                 <button type="button" onclick="copiarRelatorio()">📋 Copiar Relatório</button>
