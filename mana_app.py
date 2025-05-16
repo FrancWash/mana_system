@@ -1029,6 +1029,53 @@ Solicitação para próxima escala
     )
 
 
+# Rota para exibir histórico de relatórios
+@app.route("/historico", methods=["GET"])
+@login_required
+def historico_relatorios():
+    try:
+        with open("relatorios.json", "r", encoding="utf-8") as f:
+            relatorios = json.load(f)
+    except FileNotFoundError:
+        relatorios = []
+
+    relatorios_ordenados = sorted(
+        relatorios, key=lambda x: x.get("data", ""), reverse=True
+    )
+
+    return render_template_string(
+        """
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <title>Histórico de Relatórios</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h1>📚 Histórico de Relatórios</h1>
+                {% if relatorios %}
+                    {% for rel in relatorios %}
+                        <div style="border:1px solid #ccc; border-radius:10px; padding:20px; margin-bottom:20px; background:#f9f9f9;">
+                            <h3>{{ rel.data }} - {{ rel.periodo }} | Responsáveis: {{ rel.responsaveis }}</h3>
+                            <pre style="white-space: pre-wrap; font-family: inherit;">{{ rel.texto }}</pre>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhum relatório registrado ainda.</p>
+                {% endif %}
+
+                <br>
+                <a href="/painel">← Voltar para o Painel</a>
+            </div>
+        </body>
+        </html>
+        """,
+        relatorios=relatorios_ordenados,
+    )
+
+
 if __name__ == "__main__":
     criar_tabela_familias()
     port = int(os.environ.get("PORT", 5000))
