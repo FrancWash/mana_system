@@ -14,6 +14,7 @@ from datetime import datetime
 
 import psycopg2
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -1075,6 +1076,82 @@ def historico_relatorios():
         """,
         relatorios=relatorios_ordenados,
     )
+
+
+@app.route("/salvar_relatorio", methods=["POST"])
+@login_required
+def salvar_relatorio():
+    # Dados do formulário
+    data = request.form.get("data")
+    periodo = request.form.get("periodo")
+    responsaveis = request.form.get("responsaveis")
+    venc_junho = request.form.get("vencimento_junho")
+    venc_julho = request.form.get("vencimento_julho")
+    kits_higiene = request.form.get("higiene")
+    cestas = request.form.get("cestas")
+    realizado = request.form.get("realizado")
+    doacoes = request.form.get("doacoes")
+    faltando = request.form.get("faltando")
+    solicitacoes = request.form.get("solicitacoes")
+    palavra = request.form.get("palavra")
+
+    # Formata o conteúdo
+    conteudo = f"""
+📆 {periodo} - {data}
+Alistados: {responsaveis}
+
+🔜 Alimentos com Vencimento em JUNHO de 2025
+{venc_junho}
+
+🔜 Alimentos com Vencimento a partir JULHO de 2025
+{venc_julho}
+
+🔜 Kits de Limpeza e Higiene
+{kits_higiene}
+
+🔺 Cestas Completas
+{cestas}
+
+✅ Relatório:
+
+Recebidos:
+{doacoes}
+
+Realizado:
+{realizado}
+
+🚨 ITENS EM FALTA
+{faltando}
+
+Solicitação para próxima escala:
+{solicitacoes}
+
+📖 Compartilhamento da Palavra:
+{palavra}
+"""
+
+    # Lê o histórico existente (se houver)
+    try:
+        with open("relatorios.json", "r", encoding="utf-8") as f:
+            historico = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        historico = []
+
+    # Adiciona novo relatório
+    historico.append(
+        {
+            "data": data,
+            "periodo": periodo,
+            "responsaveis": responsaveis,
+            "conteudo": conteudo.strip(),
+        }
+    )
+
+    # Salva o novo histórico
+    with open("relatorios.json", "w", encoding="utf-8") as f:
+        json.dump(historico, f, ensure_ascii=False, indent=2)
+
+    return redirect("/relatorio_gerado")
 
 
 if __name__ == "__main__":
