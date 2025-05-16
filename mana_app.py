@@ -455,6 +455,7 @@ def painel():
             <a href="/controle" class="painel-card">📦<br>Controle</a>
             <a href="/fotos" class="painel-card">👥<br>Equipe</a>
             <a href="/familias" class="painel-card">👨‍👩‍👧<br>Famílias</a>
+            <a href='/historico' class="painel-card">📖 Histórico de Relatórios</a>
         </div>
 
         <a href="/logout" class="logout">🚪 Sair do Sistema</a>
