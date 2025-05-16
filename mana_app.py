@@ -1039,15 +1039,25 @@ Solicitação para próxima escala
 @app.route("/historico", methods=["GET"])
 @login_required
 def historico_relatorios():
-    try:
-        with open("relatorios.json", "r", encoding="utf-8") as f:
-            relatorios = json.load(f)
-    except FileNotFoundError:
-        relatorios = []
-
-    relatorios_ordenados = sorted(
-        relatorios, key=lambda x: x.get("data", ""), reverse=True
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT data, periodo, responsaveis, conteudo FROM relatorios ORDER BY criado_em DESC"
     )
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    relatorios = []
+    for row in rows:
+        relatorios.append(
+            {
+                "data": row[0],
+                "periodo": row[1],
+                "responsaveis": row[2],
+                "conteudo": row[3],
+            }
+        )
 
     return render_template_string(
         """
@@ -1065,7 +1075,7 @@ def historico_relatorios():
                     {% for rel in relatorios %}
                         <div style="border:1px solid #ccc; border-radius:10px; padding:20px; margin-bottom:20px; background:#f9f9f9;">
                             <h3>{{ rel.data }} - {{ rel.periodo }} | Responsáveis: {{ rel.responsaveis }}</h3>
-                            <pre style="white-space: pre-wrap; font-family: inherit;">{{ rel.texto }}</pre>
+                            <pre style="white-space: pre-wrap; font-family: inherit;">{{ rel.conteudo }}</pre>
                         </div>
                     {% endfor %}
                 {% else %}
@@ -1078,7 +1088,7 @@ def historico_relatorios():
         </body>
         </html>
         """,
-        relatorios=relatorios_ordenados,
+        relatorios=relatorios,
     )
 
 
