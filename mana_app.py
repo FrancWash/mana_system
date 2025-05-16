@@ -1116,6 +1116,7 @@ def salvar_relatorio():
 def criar_tabela_relatorios():
     conn = get_db_connection()
     cur = conn.cursor()
+    cur.execute("DROP TABLE IF EXISTS relatorios")
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS relatorios (
