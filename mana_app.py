@@ -1128,6 +1128,7 @@ def criar_tabela_relatorios():
             vencimento_julho TEXT,
             higiene TEXT,
             cestas TEXT,
+            conteudo TEXT,
             realizado TEXT,
             doacoes TEXT,
             faltando TEXT,
