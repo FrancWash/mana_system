@@ -1158,7 +1158,36 @@ Solicitação para próxima escala:
     return redirect("/relatorio_gerado")
 
 
+def criar_tabela_relatorios():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS relatorios (
+            id SERIAL PRIMARY KEY,
+            data TEXT,
+            periodo TEXT,
+            responsaveis TEXT,
+            vencimento_junho TEXT,
+            vencimento_julho TEXT,
+            higiene TEXT,
+            cestas TEXT,
+            realizado TEXT,
+            doacoes TEXT,
+            faltando TEXT,
+            solicitacoes TEXT,
+            palavra TEXT,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    """
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 if __name__ == "__main__":
     criar_tabela_familias()
+    criar_tabela_relatorios()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
