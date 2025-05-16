@@ -298,7 +298,19 @@ def home():
             </div>
 
             <div class="container" style="text-align: center;">
-                <a href='/login'>🔐 Entrar no Sistema</a>
+                <a href="/login" style="
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: #2e4a7d;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;">
+    🔐 Entrar no Sistema
+</a>
             </div>
 
             <footer>✨ “Servi uns aos outros, cada um conforme o dom que recebeu...” – 1 Pedro 4:10</footer>
