@@ -1015,11 +1015,10 @@ Solicitação para próxima escala
         <body>
         <div class="container">
             <h2>📋 Relatório Gerado Automaticamente</h2>
-            <form method="post">
+            <form method="post" action="/salvar_relatorio">
     <input type="hidden" name="data" value="{{ data }}">
     <input type="hidden" name="periodo" value="{{ periodo }}">
     <input type="hidden" name="responsaveis" value="{{ responsaveis }}">
-    
     <textarea name="relatorio">{{ relatorio }}</textarea>
                 <br><br>
                 <button type="submit">💾 Salvar Alterações</button>
@@ -1099,6 +1098,8 @@ def salvar_relatorio():
     periodo = request.form.get("periodo")
     responsaveis = request.form.get("responsaveis")
     conteudo = request.form.get("relatorio")
+
+    print("Conteúdo recebido:", conteudo)
 
     conn = get_db_connection()
     cur = conn.cursor()
