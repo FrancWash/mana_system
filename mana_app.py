@@ -1045,9 +1045,10 @@ def historico_relatorios():
     cur = conn.cursor()
     cur.execute(
         """
-    SELECT data, periodo, responsaveis, conteudo FROM relatorios
-    WHERE to_char(to_date(data, 'DD/MM/YYYY'), 'MM-YYYY') = %s
-    ORDER BY criado_em DESC
+    SELECT data, periodo, responsaveis, conteudo 
+FROM relatorios
+WHERE SUBSTRING(data FROM 4 FOR 2) = %s AND SUBSTRING(data FROM 7 FOR 4) = %s
+ORDER BY criado_em DESC
     """,
         (f"{mes}-{ano}",),
     )
