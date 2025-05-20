@@ -1041,20 +1041,24 @@ def historico_relatorios():
     mes = request.args.get("mes") or datetime.now().strftime("%m")
     ano = request.args.get("ano") or datetime.now().strftime("%Y")
 
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute(
-        """
-    SELECT data, periodo, responsaveis, conteudo 
-FROM relatorios
-WHERE SUBSTRING(data FROM 4 FOR 2) = %s AND SUBSTRING(data FROM 7 FOR 4) = %s
-ORDER BY criado_em DESC
-    """,
-        (f"{mes}-{ano}",),
-    )
-    rows = cur.fetchall()
-    cur.close()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT data, periodo, responsaveis, conteudo FROM relatorios
+            WHERE LENGTH(data) >= 10
+              AND SUBSTRING(data FROM 4 FOR 2) = %s
+              AND SUBSTRING(data FROM 7 FOR 4) = %s
+            ORDER BY criado_em DESC
+            """,
+            (mes.zfill(2), ano),
+        )
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        return f"<h1>Erro no filtro:</h1><pre>{str(e)}</pre>"
 
     relatorios = []
     for row in rows:
