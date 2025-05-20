@@ -1116,6 +1116,7 @@ def historico_relatorios():
         relatorios=relatorios,
         mes=mes,
         ano=ano,
+        datetime=datetime,
     )
 
 
