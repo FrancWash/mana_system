@@ -1038,10 +1038,18 @@ Solicitação para próxima escala
 @app.route("/historico", methods=["GET"])
 @login_required
 def historico_relatorios():
+    mes = request.args.get("mes") or datetime.now().strftime("%m")
+    ano = request.args.get("ano") or datetime.now().strftime("%Y")
+
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT data, periodo, responsaveis, conteudo FROM relatorios ORDER BY criado_em DESC"
+        """
+    SELECT data, periodo, responsaveis, conteudo FROM relatorios
+    WHERE to_char(to_date(data, 'DD/MM/YYYY'), 'MM-YYYY') = %s
+    ORDER BY criado_em DESC
+    """,
+        (f"{mes}-{ano}",),
     )
     rows = cur.fetchall()
     cur.close()
@@ -1070,6 +1078,24 @@ def historico_relatorios():
         <body>
             <div class="container">
                 <h1>📚 Histórico de Relatórios</h1>
+                <form method="get" style="margin-bottom: 20px;">
+                    <label for="mes">📅 Mês:</label>
+                    <select name="mes" id="mes">
+                        {% for i in range(1, 13) %}
+                            <option value="{{'%02d' % i}}" {% if mes == '%02d' % i %}selected{% endif %}>{{'%02d' % i}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="ano">🗓️ Ano:</label>
+                    <select name="ano" id="ano">
+                        {% for a in range(2024, 2031) %}
+                            <option value="{{a}}" {% if ano == a|string %}selected{% endif %}>{{a}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">🔍 Filtrar</button>
+                </form>
+
                 {% if relatorios %}
                     {% for rel in relatorios %}
                         <div style="border:1px solid #ccc; border-radius:10px; padding:20px; margin-bottom:20px; background:#f9f9f9;">
@@ -1088,6 +1114,8 @@ def historico_relatorios():
         </html>
         """,
         relatorios=relatorios,
+        mes=mes,
+        ano=ano,
     )
 
 
