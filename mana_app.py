@@ -1046,13 +1046,11 @@ def historico_relatorios():
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT data, periodo, responsaveis, conteudo FROM relatorios
-            WHERE LENGTH(data) >= 10
-              AND SUBSTRING(data FROM 4 FOR 2) = %s
-              AND SUBSTRING(data FROM 7 FOR 4) = %s
-            ORDER BY criado_em DESC
-            """,
-            (mes.zfill(2), ano),
+    SELECT data, periodo, responsaveis, conteudo FROM relatorios
+    WHERE data LIKE %s
+    ORDER BY criado_em DESC
+    """,
+            (f"__/{mes}/{ano}",),
         )
         rows = cur.fetchall()
         cur.close()
