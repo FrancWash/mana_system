@@ -153,25 +153,66 @@ def relatorio():
         solicitacoes = request.form.get("solicitacoes")
         palavra = request.form.get("palavra")
 
-        relatorios.append(
-            {
-                "data": data,
-                "periodo": periodo,
-                "responsaveis": responsaveis,
-                "vencimento_junho": vencimento_junho,
-                "vencimento_julho": vencimento_julho,
-                "higiene": higiene,
-                "cestas": cestas,
-                "realizado": realizado,
-                "doacoes": doacoes,
-                "faltando": faltando,
-                "solicitacoes": solicitacoes,
-                "palavra": palavra,
-            }
-        )
+        # Gera o conteúdo final
+        conteudo = f"""
+📆 {data} - {periodo}
+👥 Responsáveis: {responsaveis}
 
-        with open(RELATORIOS_FILE, "w") as f:
-            json.dump(relatorios, f)
+🔜 Alimentos com Vencimento em JUNHO de 2025
+{vencimento_junho or ''}
+
+🔜 Alimentos com Vencimento a partir JULHO de 2025
+{vencimento_julho or ''}
+
+🧼 Kits de Higiene
+{higiene or ''}
+
+📦 Cestas Montadas
+{cestas or ''}
+
+✅ Realizado
+{realizado or ''}
+
+🎁 Doações Recebidas
+{doacoes or ''}
+
+🚨 Itens em Falta
+{faltando or ''}
+
+📝 Solicitações para próxima escala
+{solicitacoes or ''}
+
+📖 Compartilhamento da Palavra
+{palavra or ''}
+"""
+
+        # Salva no banco PostgreSQL
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO relatorios (data, periodo, responsaveis, vencimento_junho, vencimento_julho, higiene, cestas, conteudo, realizado, doacoes, faltando, solicitacoes, palavra)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                data,
+                periodo,
+                responsaveis,
+                vencimento_junho,
+                vencimento_julho,
+                higiene,
+                cestas,
+                conteudo,
+                realizado,
+                doacoes,
+                faltando,
+                solicitacoes,
+                palavra,
+            ),
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
 
         return redirect(url_for("relatorio"))
 
