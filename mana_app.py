@@ -1091,7 +1091,7 @@ def historico_relatorios():
     WHERE data LIKE %s
     ORDER BY criado_em DESC
     """,
-            (f"__/{mes}/{ano}",),
+            (f"%/{mes}/{ano}",),
         )
         rows = cur.fetchall()
         cur.close()
