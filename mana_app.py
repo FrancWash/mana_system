@@ -33,6 +33,12 @@ import psycopg2
 
 
 def get_db_connection():
+    print(
+        "[DEBUG] Conectando ao banco:",
+        os.getenv("PGHOST"),
+        os.getenv("PGDATABASE"),
+        os.getenv("PGUSER"),
+    )
     conn = psycopg2.connect(
         host=os.getenv("PGHOST"),
         database=os.getenv("PGDATABASE"),
