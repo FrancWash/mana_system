@@ -18,16 +18,6 @@ from datetime import datetime
 
 load_dotenv()
 
-RELATORIOS_FILE = "relatorios.json"
-
-# Carrega ou inicializa relatórios
-if os.path.exists(RELATORIOS_FILE):
-    with open(RELATORIOS_FILE, "r") as f:
-        relatorios = json.load(f)
-else:
-    relatorios = []
-
-
 # Conexão com o banco PostgreSQL
 import psycopg2
 
@@ -222,64 +212,85 @@ def relatorio():
 
         return redirect(url_for("relatorio"))
 
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT data, periodo, responsaveis, cestas, faltando, palavra FROM relatorios ORDER BY criado_em DESC LIMIT 20"
+    )
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    relatorios_banco = [
+        {
+            "data": r[0],
+            "periodo": r[1],
+            "responsaveis": r[2],
+            "cestas": r[3],
+            "faltando": r[4],
+            "palavra": r[5],
+        }
+        for r in rows
+    ]
+
     return render_template_string(
         """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Relatório do Dia - Ministério Maná</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <div class="container">
-            <h2>📋 Registro de Relatório do Dia</h2>
-            <form method="post">
-                <label>Data:</label>
-                <input type="text" name="data" placeholder="dd/mm/aaaa">
-                <label>Período (ex: Manhã / Noite):</label>
-                <input type="text" name="periodo">
-                <label>Responsáveis:</label>
-                <input type="text" name="responsaveis">
-                <label>Vencimento em Junho:</label>
-                <textarea name="vencimento_junho"></textarea>
-                <label>Vencimento a partir de Julho:</label>
-                <textarea name="vencimento_julho"></textarea>
-                <label>Kits de Higiene:</label>
-                <textarea name="higiene"></textarea>
-                <label>Cestas Montadas:</label>
-                <textarea name="cestas"></textarea>
-                <label>Realizado:</label>
-                <textarea name="realizado"></textarea>
-                <label>Doações Recebidas:</label>
-                <textarea name="doacoes"></textarea>
-                <label>Itens em Falta:</label>
-                <textarea name="faltando"></textarea>
-                <label>Solicitações para próxima escala:</label>
-                <textarea name="solicitacoes"></textarea>
-                <label>Compartilhamento da Palavra:</label>
-                <textarea name="palavra"></textarea>
-                <input type="submit" value="Salvar Relatório">
-            </form>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Relatório do Dia - Ministério Maná</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        </head>
+        <body>
+            <div class="container">
+                <h2>📋 Registro de Relatório do Dia</h2>
+                <form method="post">
+                    <label>Data:</label>
+                    <input type="text" name="data" placeholder="dd/mm/aaaa">
+                    <label>Período (ex: Manhã / Noite):</label>
+                    <input type="text" name="periodo">
+                    <label>Responsáveis:</label>
+                    <input type="text" name="responsaveis">
+                    <label>Vencimento em Junho:</label>
+                    <textarea name="vencimento_junho"></textarea>
+                    <label>Vencimento a partir de Julho:</label>
+                    <textarea name="vencimento_julho"></textarea>
+                    <label>Kits de Higiene:</label>
+                    <textarea name="higiene"></textarea>
+                    <label>Cestas Montadas:</label>
+                    <textarea name="cestas"></textarea>
+                    <label>Realizado:</label>
+                    <textarea name="realizado"></textarea>
+                    <label>Doações Recebidas:</label>
+                    <textarea name="doacoes"></textarea>
+                    <label>Itens em Falta:</label>
+                    <textarea name="faltando"></textarea>
+                    <label>Solicitações para próxima escala:</label>
+                    <textarea name="solicitacoes"></textarea>
+                    <label>Compartilhamento da Palavra:</label>
+                    <textarea name="palavra"></textarea>
+                    <input type="submit" value="Salvar Relatório">
+                </form>
 
-            <h3>📑 Relatórios Anteriores</h3>
-            <ul>
-                {% for r in relatorios|reverse %}
-                <li>
-                    <strong>{{ r.data }} - {{ r.periodo }}</strong><br>
-                    Responsáveis: {{ r.responsaveis }}<br>
-                    Cestas: {{ r.cestas }}<br>
-                    Itens em falta: {{ r.faltando }}<br>
-                    Palavra: {{ r.palavra }}<br><br>
-                </li>
-                {% endfor %}
-            </ul>
+                <h3>📑 Relatórios Anteriores</h3>
+                <ul>
+                    {% for r in relatorios|reverse %}
+                    <li>
+                        <strong>{{ r.data }} - {{ r.periodo }}</strong><br>
+                        Responsáveis: {{ r.responsaveis }}<br>
+                        Cestas: {{ r.cestas }}<br>
+                        Itens em falta: {{ r.faltando }}<br>
+                        Palavra: {{ r.palavra }}<br><br>
+                    </li>
+                    {% endfor %}
+                </ul>
 
-            <br><a href="/">← Voltar ao painel</a>
-        </div>
-    </body>
-    </html>
-    """,
-        relatorios=relatorios,
+                <br><a href="/">← Voltar ao painel</a>
+            </div>
+        </body>
+        </html>
+        """,
+        relatorios=relatorios_banco,
     )
 
 
@@ -1105,9 +1116,9 @@ def historico_relatorios():
     except Exception as e:
         return f"<h1>Erro no filtro:</h1><pre>{str(e)}</pre>"
 
-    relatorios = []
+    relatorios_banco = []
     for row in rows:
-        relatorios.append(
+        relatorios_banco.append(
             {
                 "data": row[0],
                 "periodo": row[1],
@@ -1163,7 +1174,7 @@ def historico_relatorios():
         </body>
         </html>
         """,
-        relatorios=relatorios,
+        relatorios=relatorios_banco,
         mes=mes,
         ano=ano,
         datetime=datetime,
