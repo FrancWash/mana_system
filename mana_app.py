@@ -1105,10 +1105,10 @@ def historico_relatorios():
         cur.execute(
             """
     SELECT data, periodo, responsaveis, conteudo FROM relatorios
-    WHERE data LIKE %s
+    WHERE EXTRACT(MONTH FROM criado_em) = %s AND EXTRACT(YEAR FROM criado_em) = %s
     ORDER BY criado_em DESC
     """,
-            (f"%/{mes}/{ano}",),
+            (int(mes), int(ano)),
         )
         rows = cur.fetchall()
         cur.close()
