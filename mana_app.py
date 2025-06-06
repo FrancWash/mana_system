@@ -1233,7 +1233,7 @@ def salvar_relatorio():
 def criar_tabela_relatorios():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS relatorios")
+    # cur.execute("DROP TABLE IF EXISTS relatorios")
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS relatorios (
@@ -1260,8 +1260,8 @@ def criar_tabela_relatorios():
     conn.close()
 
 
-if __name__ == "__main__":
-    criar_tabela_familias()
-    criar_tabela_relatorios()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+# if __name__ == "__main__":
+#   criar_tabela_familias()
+#    criar_tabela_relatorios()
+#    port = int(os.environ.get("PORT", 5000))
+#    app.run(host="0.0.0.0", port=port)
