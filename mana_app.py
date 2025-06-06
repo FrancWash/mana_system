@@ -875,6 +875,15 @@ def fotos():
         {"arquivo": "equipe1.jpg", "descricao": "Workshop da Assistência Social"},
         {"arquivo": "equipe2.jpg", "descricao": "Organização do estoque no Maná"},
         {"arquivo": "equipe3.jpg", "descricao": "Confraternização do Maná"},
+        {
+            "arquivo": "renara_pastor.jpg",
+            "descricao": "Visita do nosso pastor amado André",
+        },
+        {"arquivo": "thiago_vanessa.jpg", "descricao": "Vanessa & Thiago grande dupla"},
+        {
+            "arquivo": "trio.jpg",
+            "descricao": "Trio parada dura, ai é mana raiz rapaz 🍞🔥✝️",
+        },
     ]
     return render_template_string(
         """
