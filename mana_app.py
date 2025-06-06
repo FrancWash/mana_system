@@ -926,11 +926,19 @@ def fotos():
                 <div class="galeria">
                     {% for foto in imagens %}
                         <div class="foto-box">
-                            <img src="{{ url_for('static', filename=foto.arquivo) }}" alt="Equipe">
+                            <img src="{{ url_for('static', filename=foto.arquivo) }}"
+     alt="Equipe"
+     style="cursor:pointer"
+     onclick="abrirModal('{{ url_for('static', filename=foto.arquivo) }}')">
                             <strong>{{ foto.descricao }}</strong>
                         </div>
                     {% endfor %}
                 </div>
+
+                <!-- Modal para abrir imagem em destaque -->
+<div id="modalImagem" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:10000;">
+  <img id="imagemModal" src="" style="max-width:90vw; max-height:90vh; border-radius:16px; box-shadow:0 4px 16px rgba(0,0,0,0.8);">
+</div>
 
                 <br><a href="{{ url_for('painel') }}">← Voltar ao Painel</a>
 
@@ -938,6 +946,15 @@ def fotos():
                     ✝️ “Onde há unidade, ali o Senhor ordena a bênção.” – Salmos 133:3
                 </footer>
             </div>
+            <script>
+function abrirModal(src) {
+  document.getElementById("imagemModal").src = src;
+  document.getElementById("modalImagem").style.display = "flex";
+}
+document.getElementById("modalImagem").onclick = function() {
+  this.style.display = "none";
+}
+</script>
         </body>
         </html>
     """,
