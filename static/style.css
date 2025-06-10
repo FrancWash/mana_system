@@ -110,6 +110,20 @@ td {
     font-size: 1.1em;
 }
 
+/* No seu style.css */
+.logo-autorelevo {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.logo-autorelevo img {
+    max-width: 300px;
+    width: 80vw;
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.10));
+    opacity: 0.95;
+}
+
 @media (max-width: 600px) {
     body {
         font-size: 1.25em !important;

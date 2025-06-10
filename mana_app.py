@@ -417,6 +417,9 @@ def login():
                     <input type="password" name="password" placeholder="Senha" required><br>
                     <input type="submit" value="Entrar">
                 </form>
+                <div class="logo-autorelevo">
+    <img src="{{ url_for('static', filename='bola_de_neve_prancha.png') }}" alt="Bola de Neve Logo" />
+</div>
             </div>
         </body>
         </html>
