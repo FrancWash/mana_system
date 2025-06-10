@@ -239,6 +239,7 @@ def relatorio():
         <html>
         <head>
             <title>Relatório do Dia - Ministério Maná</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
@@ -303,6 +304,7 @@ def home():
         <head>
             <meta charset="UTF-8">
             <title>Ministério Maná</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             <style>
                 .versiculo-container {
@@ -403,6 +405,7 @@ def login():
         <html>
         <head>
             <title>Login</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
@@ -438,6 +441,7 @@ def painel():
 <head>
     <meta charset="UTF-8">
     <title>Painel - Ministério Maná</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         body {
@@ -563,6 +567,7 @@ def escala():
         <html>
         <head>
             <title>Escala - Ministério Maná</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
@@ -669,6 +674,7 @@ def controle():
         <html>
         <head>
             <title>Controle de Estoque - Ministério Maná</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
@@ -773,6 +779,7 @@ def familias():
         <html>
         <head>
             <title>Cadastro de Famílias</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
@@ -891,6 +898,7 @@ def fotos():
         <html>
         <head>
             <title>Fotos da Equipe - Ministério Maná</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             <style>
                 .galeria {
@@ -1044,6 +1052,7 @@ Solicitação para próxima escala
             <html>
             <head>
                 <title>Relatório Editado</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
                 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             </head>
             <body>
@@ -1065,6 +1074,7 @@ Solicitação para próxima escala
         <html>
         <head>
             <title>Editar Relatório</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             <style>
                 textarea {
@@ -1160,6 +1170,7 @@ def historico_relatorios():
         <head>
             <meta charset="UTF-8">
             <title>Histórico de Relatórios</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         </head>
         <body>
